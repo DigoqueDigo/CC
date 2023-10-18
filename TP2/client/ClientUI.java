@@ -33,7 +33,12 @@ public class ClientUI{
 
             System.out.print(YELLOW_BOLD + ">>> " + RESET);
 
-            try {tcpPacket = this.clientUtils.createTCPPacket(scanner.readLine());}
+            try {
+                String line = scanner.readLine();
+                if (line != null && line.length() > 0){
+                    tcpPacket = this.clientUtils.createTCPPacket(line);
+                }
+            }
 
             catch (Exception e){
                 System.out.println(RED + "Comando inválido" + RESET);

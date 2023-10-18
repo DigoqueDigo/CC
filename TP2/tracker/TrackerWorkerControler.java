@@ -41,7 +41,8 @@ public class TrackerWorkerControler{
                 break;
 
             case GET:
-                this.executeGET(tcpPacket);
+                List<String> resutl = this.executeGET(tcpPacket);
+                if (resutl != null) files.addAll(resutl);
                 break;
 
             case EXIT:

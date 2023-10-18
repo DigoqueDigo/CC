@@ -106,4 +106,19 @@ public class TCPPacket{
 
         return new TCPPacket(protocol, IPsource, IPdest, Portsource, Portdest, files);
     }
+
+
+    public String toString(){
+
+        StringBuilder buffer = new StringBuilder();
+
+        buffer.append("Protocolo: ").append(this.protocol.toString());
+        buffer.append("\nIP source: ").append(this.IPsource);
+        buffer.append("\nIP dest: ").append(this.IPdest);
+        buffer.append("\nPort source: ").append(this.Portsource);
+        buffer.append("\nPort dest: ").append(this.Portdest);
+        buffer.append("\nFiles: ").append(this.files.stream().collect(Collectors.joining(" ")));
+
+        return buffer.toString();
+    }
 }

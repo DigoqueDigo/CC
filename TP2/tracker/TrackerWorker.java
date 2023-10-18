@@ -34,6 +34,8 @@ public class TrackerWorker implements Runnable{
                     throw new Exception("A leitura do pacote TCP não foi atómica");
                 }
 
+                System.out.println(TCPPacket.deserializeTCPacket(data));
+
                 TCPPacket tcpPacket = this.trackerworkercontroler.execute(TCPPacket.deserializeTCPacket(data));
                 byte[] response = tcpPacket.serializeTCPPacket();
 

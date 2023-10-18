@@ -37,7 +37,7 @@ public class Client{
 
         try{
 
-            for (int packet_size; (packet_size = inputstream.readInt()) > 0; System.out.print(">>> ")){
+            for (int packet_size; (packet_size = inputstream.readInt()) > 0;){
 
                 if (inputstream.read(response,0,packet_size) != packet_size){
                     throw new Exception("A leitura do pacote TCP não foi atómica");
@@ -45,6 +45,8 @@ public class Client{
 
                 tcpPacket = TCPPacket.deserializeTCPacket(response);
                 // trabalar o pacote acabado de receber
+
+                System.out.println(tcpPacket.toString());
 
 
                 tcpPacket = this.clientUI.getUserInput();
