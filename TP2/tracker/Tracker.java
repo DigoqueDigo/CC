@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class Tracker{
 
-    private static final int DefaultPort = 12345;
+    public static final int DefaultPort = 12345;
 
     public static void main(String[] args) throws IOException{
 

@@ -16,7 +16,7 @@ public class TrackerWorker implements Runnable{
 
     public TrackerWorker(Socket socket, TrackerWorkerControler trackerworkercontroler) throws IOException{
         this.socket = socket;
-        this.trackerworkercontroler =trackerworkercontroler;
+        this.trackerworkercontroler = trackerworkercontroler;
         this.inputstream = new DataInputStream(socket.getInputStream());
         this.outputstream = new DataOutputStream(socket.getOutputStream());
     }
@@ -26,7 +26,7 @@ public class TrackerWorker implements Runnable{
 
         try{
             
-            byte[] data = new byte[TCPPacket.MAX_SIZE] ;
+            byte[] data = new byte[TCPPacket.MAX_SIZE];
 
             for (int packet_size; (packet_size = inputstream.readInt()) > 0;){
 
@@ -34,16 +34,12 @@ public class TrackerWorker implements Runnable{
                     throw new Exception("A leitura do pacote TCP não foi atómica");
                 }
 
-                this.trackerworkercontroler.execute(TCPPacket.deserializeTCPacket(data));
+                TCPPacket tcpPacket = this.trackerworkercontroler.execute(TCPPacket.deserializeTCPacket(data));
+                byte[] response = tcpPacket.serializeTCPPacket();
 
-
-
-                
-
-
-
-
-
+                outputstream.writeInt(response.length);;
+                outputstream.write(response,0,response.length);
+                outputstream.flush();
             }
         }
 
