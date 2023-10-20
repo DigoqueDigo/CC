@@ -1,8 +1,9 @@
 package tracker;
-import java.util.ArrayList;
-import java.util.List;
 import packets.TCPPacket;
 import packets.TCPPacket.Protocol;
+import packets.messages.ToClient;
+import packets.messages.Message.TYPE;
+import tracker.containers.TrackerContainer;
 
 
 public class TrackerWorkerControler{
@@ -21,18 +22,22 @@ public class TrackerWorkerControler{
 
 
     private void executeEXIT(TCPPacket tcpPacket){
-        this.trackercontainer.removeIPaddress(tcpPacket.getIPsource());
+        this.trackercontainer.removeClient(tcpPacket);
     }
 
 
-    private List<String> executeGET(TCPPacket tcpPacket){
-        return this.trackercontainer.getIPaddresses(tcpPacket.getFiles().get(0));
+    private ToClient executeGET(TCPPacket tcpPacket){
+        return this.trackercontainer.getPieces(tcpPacket);
     }
 
 
     public TCPPacket execute(TCPPacket tcpPacket){
+        System.out.println("ANTES-------------------------------------------ANTES");
+        System.out.println(this.trackercontainer.toString());
+        System.out.println("ANTES-------------------------------------------ANTES");
 
-        List<String> files = new ArrayList<String>();
+        TCPPacket result;
+        ToClient toClient = new ToClient();
 
         switch (tcpPacket.geProtocol()){
 
@@ -41,8 +46,7 @@ public class TrackerWorkerControler{
                 break;
 
             case GET:
-                List<String> resutl = this.executeGET(tcpPacket);
-                if (resutl != null) files.addAll(resutl);
+                toClient = this.executeGET(tcpPacket);
                 break;
 
             case EXIT:
@@ -53,12 +57,19 @@ public class TrackerWorkerControler{
                 break;
         }
 
-        return new TCPPacket(
-            Protocol.ACK,
-            tcpPacket.getIPdest(),
-            tcpPacket.getIPsource(),
-            tcpPacket.getPortdest(),
-            tcpPacket.getPortsource(),
-            files);
+        System.out.println("DEPOIS-------------------------------------------DEPOIS");
+        System.out.println(this.trackercontainer.toString());
+        System.out.println("DEPOIS-------------------------------------------DEPOIS");
+
+        result = new TCPPacket(
+                        Protocol.ACK,
+                        tcpPacket.getIPdest(),
+                        tcpPacket.getIPsource(),
+                        tcpPacket.getPortdest(),
+                        tcpPacket.getPortsource(),
+                        TYPE.TOCLIENT);
+
+        result.setToClient(toClient);
+        return result;
     }
 }

@@ -1,0 +1,6 @@
+rm client/*.class
+rm tracker/*.class
+rm tracker/containers/*.class
+rm packets/*.class
+rm packets/info/*.class
+rm packets/messages/*.class

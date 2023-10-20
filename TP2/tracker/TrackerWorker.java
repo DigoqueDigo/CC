@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.Socket;
 import packets.TCPPacket;
 
+
+
 public class TrackerWorker implements Runnable{
 
     private Socket socket;
@@ -24,20 +26,31 @@ public class TrackerWorker implements Runnable{
 
     public void run(){
 
+        TCPPacket tcpPacket;
+        byte[] request, response;
+
         try{
-            
-            byte[] data = new byte[TCPPacket.MAX_SIZE];
 
             for (int packet_size; (packet_size = inputstream.readInt()) > 0;){
 
-                if (inputstream.read(data,0,packet_size) != packet_size){
+                request = new byte[packet_size];
+
+                if (inputstream.read(request,0,packet_size) != packet_size){
                     throw new Exception("A leitura do pacote TCP não foi atómica");
                 }
 
-                System.out.println(TCPPacket.deserializeTCPacket(data));
+                System.out.println(TCPPacket.deserializeTCPacket(request).toString());
 
-                TCPPacket tcpPacket = this.trackerworkercontroler.execute(TCPPacket.deserializeTCPacket(data));
-                byte[] response = tcpPacket.serializeTCPPacket();
+                tcpPacket = TCPPacket.deserializeTCPacket(request);
+                tcpPacket = this.trackerworkercontroler.execute(tcpPacket);
+                
+                System.out.print(tcpPacket.toString());
+                System.out.println("\n\n");
+                
+                response = tcpPacket.serializeTCPPacket();
+                
+                System.out.println(TCPPacket.deserializeTCPacket(response));
+                 System.out.println("\n\n");
 
                 outputstream.writeInt(response.length);;
                 outputstream.write(response,0,response.length);
