@@ -43,12 +43,12 @@ public class TrackerWorker implements Runnable{
 
                 tcpPacket = TCPPacket.deserializeTCPacket(request);
                 tcpPacket = this.trackerworkercontroler.execute(tcpPacket);
-                
+
                 System.out.print(tcpPacket.toString());
                 System.out.println("\n\n");
-                
+
                 response = tcpPacket.serializeTCPPacket();
-                
+
                 System.out.println(TCPPacket.deserializeTCPacket(response));
                  System.out.println("\n\n");
 
@@ -59,7 +59,7 @@ public class TrackerWorker implements Runnable{
         }
 
         catch (EOFException e){
-            
+
             try{
                 inputstream.close();
                 outputstream.close();

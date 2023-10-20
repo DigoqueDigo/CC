@@ -33,7 +33,7 @@ public class TCPPacket{
         this.Portdest = Portdest;
         this.Toclient = null;
         this.Totracker = null;
-        
+
         if (type == TYPE.TOCLIENT) this.Toclient = new ToClient();
         else this.Totracker = new ToTracker();
     }
@@ -87,7 +87,7 @@ public class TCPPacket{
 
     public void setToTracker(Message<FileInfo,PieceInfo> Totracker){
         this.Totracker = Totracker;
-    } 
+    }
 
 
     public byte[] serializeTCPPacket() throws IOException{
@@ -150,7 +150,7 @@ public class TCPPacket{
         buffer.append("\nPort source: ").append(this.Portsource);
         buffer.append("\nPort dest: ").append(this.Portdest);
         buffer.append("\npayload");
-        
+
         if (this.Toclient != null) buffer.append("\n" + this.Toclient.toString());
         else buffer.append("\n" + this.Totracker.toString());
 

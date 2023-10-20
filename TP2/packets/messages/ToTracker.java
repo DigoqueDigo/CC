@@ -62,9 +62,9 @@ public class ToTracker extends Message<FileInfo,PieceInfo>{
         DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
 
         dataOutputStream.writeInt(this.message.size());
-        
+
         for (Map.Entry<FileInfo,List<PieceInfo>> entry : this.message){
-            
+
             data_file = entry.getKey().serialize();
             dataOutputStream.writeInt(data_file.length);
             dataOutputStream.write(data_file);
@@ -78,7 +78,7 @@ public class ToTracker extends Message<FileInfo,PieceInfo>{
         }
 
         dataOutputStream.flush();
-        return byteArrayOutputStream.toByteArray();  
+        return byteArrayOutputStream.toByteArray();
     }
 
 
@@ -86,7 +86,7 @@ public class ToTracker extends Message<FileInfo,PieceInfo>{
 
         byte[] data_file, data_piece;
         int length_pices, length_files;
-        
+
         ToTracker result = new ToTracker();
         List<PieceInfo> list= new ArrayList<>();
 

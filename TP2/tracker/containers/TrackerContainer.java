@@ -15,7 +15,7 @@ public class TrackerContainer{
     private ReadLock readlock;
     private WriteLock writelock;
 
-    
+
     public TrackerContainer(){
         ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
         this.readlock = lock.readLock();
@@ -49,7 +49,7 @@ public class TrackerContainer{
             for (FileInfo file : tcpPacket.getToTracker().getKeys()){
 
                 PieceContainer piececontainer = this.container.get(file);
-                
+
                 if (piececontainer != null){
                     piececontainer.getKeys().forEach(x -> {
                         toClient.put(x,piececontainer.getValue(x));

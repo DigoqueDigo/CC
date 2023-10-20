@@ -26,7 +26,7 @@ public class PieceInfo implements Binary{
         this.hash = Arrays.hashCode(data);
         this.position = position;
     }
-    
+
 
     public int getHash(){
         return this.hash;
@@ -63,7 +63,7 @@ public class PieceInfo implements Binary{
         dataOutputStream.writeInt(this.position);
 
         dataOutputStream.flush();
-        return byteArrayOutputStream.toByteArray();  
+        return byteArrayOutputStream.toByteArray();
     }
 
 

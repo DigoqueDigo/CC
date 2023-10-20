@@ -22,7 +22,7 @@ public class ToClient extends Message<PieceInfo,String>{
         this.message = new ArrayList<>();
     }
 
-    
+
     public void put(PieceInfo piece, List<String> IPaddresses){
         this.message.add(
             new AbstractMap.SimpleEntry<PieceInfo,List<String>>(
@@ -30,7 +30,7 @@ public class ToClient extends Message<PieceInfo,String>{
                 IPaddresses.stream().collect(Collectors.toList())));
     }
 
-    
+
     public int size(){
         return this.message.size();
     }
@@ -61,7 +61,7 @@ public class ToClient extends Message<PieceInfo,String>{
         DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
 
         dataOutputStream.writeInt(this.message.size());
-        
+
         for (Map.Entry<PieceInfo,List<String>> entry : this.message){
 
             data_piece = entry.getKey().serialize();
