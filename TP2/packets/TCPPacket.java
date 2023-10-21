@@ -14,7 +14,7 @@ import packets.messages.Message.TYPE;
 
 public class TCPPacket{
 
-    public enum Protocol {HELLO, GET, EXIT, ACK};
+    public enum Protocol {HELLO, GET, EXIT, ACK, EXITACK};
 
     private Protocol protocol;
     private String IPsource;
@@ -39,7 +39,7 @@ public class TCPPacket{
     }
 
 
-    public Protocol geProtocol(){
+    public Protocol getProtocol(){
         return this.protocol;
     }
 

@@ -1,6 +1,7 @@
 package tracker.containers;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Iterator;
 import packets.TCPPacket;
 import packets.info.FileInfo;
 import packets.messages.ToClient;
@@ -69,11 +70,12 @@ public class TrackerContainer{
         try{
             this.writelock.lock();
             this.container.values().stream().forEach(x -> x.removeClient(tcpPacket.getIPsource()));
-            this.container.entrySet().stream().forEach(x -> {
-                if (x.getValue().size() == 0){
-                    this.container.remove(x.getKey());
-                }
-            });
+
+            Iterator <Map.Entry<FileInfo,PieceContainer>> iterator = this.container.entrySet().iterator();
+
+            while (iterator.hasNext()){
+                if (iterator.next().getValue().size() == 0) iterator.remove();
+            }
         }
 
         finally {this.writelock.unlock();}

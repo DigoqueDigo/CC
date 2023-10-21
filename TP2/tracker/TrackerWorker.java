@@ -50,7 +50,7 @@ public class TrackerWorker implements Runnable{
                 response = tcpPacket.serializeTCPPacket();
 
                 System.out.println(TCPPacket.deserializeTCPacket(response));
-                 System.out.println("\n\n");
+                System.out.println("\n\n");
 
                 outputstream.writeInt(response.length);;
                 outputstream.write(response,0,response.length);
@@ -61,6 +61,7 @@ public class TrackerWorker implements Runnable{
         catch (EOFException e){
 
             try{
+                System.out.println("FIM DA THREAD DO SERVIDOR");
                 inputstream.close();
                 outputstream.close();
                 socket.close();

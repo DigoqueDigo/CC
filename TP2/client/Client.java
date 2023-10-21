@@ -1,5 +1,4 @@
 package client;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -7,6 +6,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import packets.TCPPacket;
+import packets.TCPPacket.Protocol;
 
 
 public class Client{
@@ -18,7 +18,6 @@ public class Client{
     private final InetSocketAddress dest;
     private DataInputStream inputstream;
     private DataOutputStream outputstream;
-    private BufferedReader scanner;
 
 
     public Client(Socket socket, String folder) throws IOException{
@@ -57,7 +56,12 @@ public class Client{
                 }
 
                 tcpPacket = TCPPacket.deserializeTCPacket(response);
-                System.out.println(tcpPacket.toString());
+
+                
+                                System.out.println(tcpPacket.toString());
+                // remover o if e acrescentar um metodo no pŕoximo comentário
+
+                if (tcpPacket.getProtocol() == Protocol.EXITACK) throw new EOFException();
 
                 // trabalhar o pacote acabado de receber
 
@@ -73,7 +77,6 @@ public class Client{
         }
 
         catch (EOFException e){
-            this.scanner.close();
             this.inputstream.close();
             this.outputstream.close();
             this.socket.close();

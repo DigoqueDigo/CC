@@ -1,6 +1,7 @@
 package tracker.containers;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,10 +42,16 @@ public class PieceContainer{
 
 
     public void removeClient(String IPaddress){
-        this.container.values().forEach(x -> x.remove(IPaddress));
-        this.container.entrySet().stream().forEach(x -> {
-            if (x.getValue().size() == 0) this.container.remove(x.getKey());
-        });
+
+        Iterator<Map.Entry<PieceInfo,List<String>>> iterator = this.container.entrySet().iterator();
+        
+        while (iterator.hasNext()){
+            Map.Entry<PieceInfo,List<String>> entry = iterator.next();
+            List<String> value = entry.getValue();
+
+            value.remove(IPaddress);
+            if (value.isEmpty()) iterator.remove();
+        }
     }
 
 

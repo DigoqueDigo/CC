@@ -37,23 +37,28 @@ public class TrackerWorkerControler{
         System.out.println("ANTES-------------------------------------------ANTES");
 
         TCPPacket result;
+        Protocol protocol;
         ToClient toClient = new ToClient();
 
-        switch (tcpPacket.geProtocol()){
+        switch (tcpPacket.getProtocol()){
 
             case HELLO:
+                protocol = Protocol.ACK;
                 this.executeHELLO(tcpPacket);
                 break;
 
             case GET:
+                protocol = Protocol.ACK;
                 toClient = this.executeGET(tcpPacket);
                 break;
 
             case EXIT:
+                protocol = Protocol.EXITACK;
                 this.executeEXIT(tcpPacket);
                 break;
 
             default:
+                protocol = Protocol.ACK;
                 break;
         }
 
@@ -62,7 +67,7 @@ public class TrackerWorkerControler{
         System.out.println("DEPOIS-------------------------------------------DEPOIS");
 
         result = new TCPPacket(
-                        Protocol.ACK,
+                        protocol,
                         tcpPacket.getIPdest(),
                         tcpPacket.getIPsource(),
                         tcpPacket.getPortdest(),
