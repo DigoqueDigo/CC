@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +20,11 @@ import packets.messages.Message.TYPE;
 public class ClientUtils{
 
 
+    private static boolean fileAlredyExists(String file){
+        return new File(file).exists();
+    }
+
+
     private static List<String> getFiles(String folder){
 
         return Stream.of(new File(folder).listFiles())
@@ -28,14 +34,14 @@ public class ClientUtils{
     }
 
 
-    private static List<PieceInfo> getPieces(String path) throws IOException{
+    private static List<PieceInfo> getPieces(String file, String folder) throws IOException{
 
         byte[] data = new byte[PieceInfo.SIZE];
         List<PieceInfo> pieces = new ArrayList<PieceInfo>();
-        FileInputStream inputstream = new FileInputStream(path);
+        FileInputStream inputstream = new FileInputStream(folder + file);
 
         for (int bytes_read, p = 0; (bytes_read = inputstream.read(data)) > 0; p++){
-            pieces.add(new PieceInfo(Arrays.copyOf(data,bytes_read),p));
+            pieces.add(new PieceInfo(Arrays.copyOf(data,bytes_read),p,file));
         }
 
         inputstream.close();
@@ -55,7 +61,7 @@ public class ClientUtils{
 
         for (FileInfo file : files){
 
-            try {toTracker.put(file,ClientUtils.getPieces(folder + file.getName()));}
+            try {toTracker.put(file,ClientUtils.getPieces(file.getName(),folder));}
 
             catch (Exception e){
                 System.out.println("ERRO ao definir pieces");}
@@ -74,7 +80,7 @@ public class ClientUtils{
     }
 
 
-    public static TCPPacket getTCPPacket(String line, InetSocketAddress source, InetSocketAddress dest){
+    public static TCPPacket getTCPPacket(String line, String folder, InetSocketAddress source, InetSocketAddress dest) throws FileAlreadyExistsException{
 
         TCPPacket tcpPacket;
         ToTracker toTracker = new ToTracker();
@@ -83,6 +89,15 @@ public class ClientUtils{
         switch (Protocol.valueOf(tokens[0])){
 
             case GET:
+
+                String existFile = Stream.of(tokens)
+                                        .skip(1)
+                                        .filter(x -> ClientUtils.fileAlredyExists(folder + x))
+                                        .findFirst()
+                                        .orElse(null);
+
+                if (existFile != null) throw new FileAlreadyExistsException(existFile);
+
                 Stream.of(tokens)
                     .skip(1)
                     .map(x -> new FileInfo(x,0))

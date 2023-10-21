@@ -1,4 +1,5 @@
 rm client/*.class
+rm carrier/*.class
 rm tracker/*.class
 rm tracker/containers/*.class
 rm packets/*.class

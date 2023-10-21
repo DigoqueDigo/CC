@@ -43,12 +43,12 @@ public class TrackerWorkerControler{
         switch (tcpPacket.getProtocol()){
 
             case HELLO:
-                protocol = Protocol.ACK;
+                protocol = Protocol.HELLOACK;
                 this.executeHELLO(tcpPacket);
                 break;
 
             case GET:
-                protocol = Protocol.ACK;
+                protocol = Protocol.GETAK;
                 toClient = this.executeGET(tcpPacket);
                 break;
 

@@ -14,17 +14,20 @@ public class PieceInfo implements Binary{
 
     private int hash;
     private int position;
+    private String file;
 
 
-    public PieceInfo(int hash, int position){
+    public PieceInfo(int hash, int position, String file){
         this.hash = hash;
         this.position = position;
+        this.file = file;
     }
 
 
-    public PieceInfo(byte[] data, int position){
+    public PieceInfo(byte[] data, int position, String file){
         this.hash = Arrays.hashCode(data);
         this.position = position;
+        this.file = file;
     }
 
 
@@ -33,8 +36,13 @@ public class PieceInfo implements Binary{
     }
 
 
-    public int getPosition(int position){
+    public int getPosition(){
         return this.position;
+    }
+
+
+    public String getFile(){
+        return this.file;
     }
 
 
@@ -61,6 +69,7 @@ public class PieceInfo implements Binary{
 
         dataOutputStream.writeInt(this.hash);
         dataOutputStream.writeInt(this.position);
+        dataOutputStream.writeUTF(this.file);
 
         dataOutputStream.flush();
         return byteArrayOutputStream.toByteArray();
@@ -74,7 +83,8 @@ public class PieceInfo implements Binary{
 
         return new PieceInfo(
             dataInputStream.readInt(),
-            dataInputStream.readInt());
+            dataInputStream.readInt(),
+            dataInputStream.readUTF());
     }
 
 
@@ -84,6 +94,7 @@ public class PieceInfo implements Binary{
 
         buffer.append("PieceInfo hash: ").append(this.hash);
         buffer.append("\tPieceInfo position: ").append(this.position);
+        buffer.append("\tFile: ").append(this.file);
 
         return buffer.toString();
     }

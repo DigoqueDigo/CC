@@ -4,8 +4,8 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
+import carrier.Carrier;
 import packets.TCPPacket;
-
 
 
 public class TrackerWorker implements Runnable{
@@ -27,34 +27,18 @@ public class TrackerWorker implements Runnable{
     public void run(){
 
         TCPPacket tcpPacket;
-        byte[] request, response;
 
         try{
 
-            for (int packet_size; (packet_size = inputstream.readInt()) > 0;){
+            while ((tcpPacket = Carrier.receiveTCPPacket(inputstream)) != null){
 
-                request = new byte[packet_size];
+                System.out.println(tcpPacket.toString());
 
-                if (inputstream.read(request,0,packet_size) != packet_size){
-                    throw new Exception("A leitura do pacote TCP não foi atómica");
-                }
-
-                System.out.println(TCPPacket.deserializeTCPacket(request).toString());
-
-                tcpPacket = TCPPacket.deserializeTCPacket(request);
                 tcpPacket = this.trackerworkercontroler.execute(tcpPacket);
 
                 System.out.print(tcpPacket.toString());
-                System.out.println("\n\n");
 
-                response = tcpPacket.serializeTCPPacket();
-
-                System.out.println(TCPPacket.deserializeTCPacket(response));
-                System.out.println("\n\n");
-
-                outputstream.writeInt(response.length);;
-                outputstream.write(response,0,response.length);
-                outputstream.flush();
+                Carrier.sendTCPPacket(outputstream,tcpPacket);
             }
         }
 
