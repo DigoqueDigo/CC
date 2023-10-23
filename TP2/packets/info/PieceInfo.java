@@ -4,7 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import packets.Binary;
 
 
@@ -12,12 +13,12 @@ public class PieceInfo implements Binary{
 
     public static final int SIZE = 20;
 
-    private int hash;
+    private String hash;
     private int position;
     private String file;
 
 
-    public PieceInfo(int hash, int position, String file){
+    public PieceInfo(String hash, int position, String file){
         this.hash = hash;
         this.position = position;
         this.file = file;
@@ -25,13 +26,17 @@ public class PieceInfo implements Binary{
 
 
     public PieceInfo(byte[] data, int position, String file){
-        this.hash = Arrays.hashCode(data);
-        this.position = position;
-        this.file = file;
+        try{
+            this.hash = PieceInfo.SHA1(data);
+            this.position = position;
+            this.file = file;
+        }
+
+        catch (Exception e) {e.printStackTrace();}
     }
 
 
-    public int getHash(){
+    public String getHash(){
         return this.hash;
     }
 
@@ -46,6 +51,24 @@ public class PieceInfo implements Binary{
     }
 
 
+    private static String SHA1(byte[] data) throws NoSuchAlgorithmException{
+        MessageDigest message = MessageDigest.getInstance("SHA-1");
+        return byteArrayToHex(message.digest(data));
+    }
+
+
+    private static String byteArrayToHex(final byte[] hash){
+        
+        StringBuilder buffer = new StringBuilder();
+
+        for (byte b : hash){
+            buffer.append(String.format("%02x", b));
+        }
+
+        return buffer.toString();
+    }
+
+
     public boolean equals(Object obj){
 
         if (this == obj) return true;
@@ -53,12 +76,12 @@ public class PieceInfo implements Binary{
         if (obj == null || obj.getClass() != this.getClass()) return false;
 
         PieceInfo that = (PieceInfo) obj;
-        return this.hash == that.getHash();
+        return this.hash.equals(that.getHash());
     }
 
 
     public int hashCode(){
-        return this.hash;
+        return this.hash.hashCode();
     }
 
 
@@ -67,7 +90,7 @@ public class PieceInfo implements Binary{
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
 
-        dataOutputStream.writeInt(this.hash);
+        dataOutputStream.writeUTF(this.hash);
         dataOutputStream.writeInt(this.position);
         dataOutputStream.writeUTF(this.file);
 
@@ -82,7 +105,7 @@ public class PieceInfo implements Binary{
         DataInputStream dataInputStream = new DataInputStream(byteArrayInputStream);
 
         return new PieceInfo(
-            dataInputStream.readInt(),
+            dataInputStream.readUTF(),
             dataInputStream.readInt(),
             dataInputStream.readUTF());
     }
