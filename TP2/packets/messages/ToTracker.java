@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import carrier.Reader;
 import packets.info.FileInfo;
 import packets.info.PieceInfo;
 
@@ -98,7 +99,7 @@ public class ToTracker extends Message<FileInfo,PieceInfo>{
         for (int p = 0; p < length_files; p++, list.clear()){
 
             data_file = new byte[dataInputStream.readInt()];
-            dataInputStream.read(data_file,0,data_file.length);
+            Reader.read(dataInputStream,data_file,data_file.length);
             FileInfo file = FileInfo.deserialize(data_file);
 
             length_pices = dataInputStream.readInt();
@@ -106,7 +107,7 @@ public class ToTracker extends Message<FileInfo,PieceInfo>{
             for (int i = 0; i < length_pices; i++){
 
                 data_piece = new byte[dataInputStream.readInt()];
-                dataInputStream.read(data_piece,0,data_piece.length);
+                Reader.read(dataInputStream,data_piece,data_piece.length);
                 list.add(PieceInfo.deserialize(data_piece));
             }
 

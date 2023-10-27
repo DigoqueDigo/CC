@@ -32,9 +32,9 @@ public class TrackerWorkerControler{
 
 
     public TCPPacket execute(TCPPacket tcpPacket){
-        System.out.println("ANTES-------------------------------------------ANTES");
+        System.out.println("BEFORE-------------------------------------------BEFORE");
         System.out.println(this.trackercontainer.toString());
-        System.out.println("ANTES-------------------------------------------ANTES");
+        System.out.println("BEFORE-------------------------------------------BEFORE");
 
         TCPPacket result;
         Protocol protocol;
@@ -62,9 +62,9 @@ public class TrackerWorkerControler{
                 break;
         }
 
-        System.out.println("DEPOIS-------------------------------------------DEPOIS");
+        System.out.println("AFTER-------------------------------------------AFTER");
         System.out.println(this.trackercontainer.toString());
-        System.out.println("DEPOIS-------------------------------------------DEPOIS");
+        System.out.println("AFTER-------------------------------------------AFTER");
 
         result = new TCPPacket(
                         protocol,

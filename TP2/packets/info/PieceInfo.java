@@ -11,7 +11,7 @@ import packets.Binary;
 
 public class PieceInfo implements Binary{
 
-    public static final int SIZE = 20;
+    public static final int SIZE = 2048;
 
     private String hash;
     private int position;

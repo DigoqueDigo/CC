@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import carrier.Reader;
 import packets.info.PieceInfo;
 
 
@@ -95,7 +96,7 @@ public class ToClient extends Message<PieceInfo,String>{
         for (int p = 0; p < length_pices; p++, list.clear()){
 
             data_piece = new byte[dataInputStream.readInt()];
-            dataInputStream.read(data_piece,0,data_piece.length);
+            Reader.read(dataInputStream,data_piece,data_piece.length);
             PieceInfo piece = PieceInfo.deserialize(data_piece);
 
             length_addresses = dataInputStream.readInt();

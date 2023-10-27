@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import carrier.Reader;
 import packets.info.FileInfo;
 import packets.info.PieceInfo;
 import packets.messages.Message;
@@ -129,7 +130,7 @@ public class TCPPacket{
         TYPE type = TYPE.valueOf(dataInputStream.readUTF());
 
         data_message = new byte[dataInputStream.readInt()];
-        dataInputStream.read(data_message,0,data_message.length);
+        Reader.read(dataInputStream,data_message,data_message.length);
 
         result = new TCPPacket(protocol,IPsource,IPdest,Portsource,Portdest,type);
 

@@ -45,7 +45,7 @@ public class TrackerWorker implements Runnable{
         catch (EOFException e){
 
             try{
-                System.out.println("FIM DA THREAD DO SERVIDOR");
+                System.out.println("Client disconnected");
                 inputstream.close();
                 outputstream.close();
                 socket.close();

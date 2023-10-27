@@ -43,11 +43,11 @@ public class ClientUI{
             }
 
             catch (FileAlreadyExistsException e){
-                System.out.println(RED + "Ficheiro já adquirido: " + e.getMessage() + RESET);
+                System.out.println(RED + "File already acquired: " + e.getMessage() + RESET);
             }
 
             catch (Exception e){
-                System.out.println(RED + "Comando inválido" + RESET);
+                System.out.println(RED + "Invalid command" + RESET);
             }
         }
 

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import carrier.Reader;
 import packets.TCPPacket;
 import packets.TCPPacket.Protocol;
 import packets.info.FileInfo;
@@ -40,7 +41,7 @@ public class ClientUtils{
         List<PieceInfo> pieces = new ArrayList<PieceInfo>();
         FileInputStream inputstream = new FileInputStream(folder + file);
 
-        for (int bytes_read, p = 0; (bytes_read = inputstream.read(data)) > 0; p++){
+        for (int bytes_read, p = 0; (bytes_read = Reader.read(inputstream,data,data.length)) > 0; p++){
             pieces.add(new PieceInfo(Arrays.copyOf(data,bytes_read),p,file));
         }
 
@@ -64,7 +65,7 @@ public class ClientUtils{
             try {toTracker.put(file,ClientUtils.getPieces(file.getName(),folder));}
 
             catch (Exception e){
-                System.out.println("ERRO ao definir pieces");}
+                System.out.println("ERROR while defining pieces");}
         }
 
         tcpPacket = new TCPPacket(

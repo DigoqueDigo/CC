@@ -22,8 +22,9 @@ public class Carrier{
         byte[] message = new byte[packet_size];
         
         if (message.length <= 0) throw new EOFException();
-        if (inputstream.read(message,0,packet_size) != packet_size){
-            throw new Exception("A leitura do pacote TCP não foi atómica");
+
+        if (Reader.read(inputstream,message,packet_size) != packet_size){
+            throw new Exception("TCP packet reading incomplete");
         }
 
         return TCPPacket.deserializeTCPacket(message);
