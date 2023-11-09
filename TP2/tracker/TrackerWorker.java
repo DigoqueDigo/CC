@@ -11,6 +11,7 @@ import packets.TCPPacket;
 public class TrackerWorker implements Runnable{
 
     private Socket socket;
+    private Carrier carrier;
     private DataInputStream inputstream;
     private DataOutputStream outputstream;
     private TrackerWorkerControler trackerworkercontroler;
@@ -18,6 +19,7 @@ public class TrackerWorker implements Runnable{
 
     public TrackerWorker(Socket socket, TrackerWorkerControler trackerworkercontroler) throws IOException{
         this.socket = socket;
+        this.carrier = Carrier.getInstance();
         this.trackerworkercontroler = trackerworkercontroler;
         this.inputstream = new DataInputStream(socket.getInputStream());
         this.outputstream = new DataOutputStream(socket.getOutputStream());
@@ -30,7 +32,7 @@ public class TrackerWorker implements Runnable{
 
         try{
 
-            while ((tcpPacket = Carrier.receiveTCPPacket(inputstream)) != null){
+            while ((tcpPacket = carrier.receiveTCPPacket(inputstream)) != null){
 
                 System.out.println(tcpPacket.toString());
 
@@ -38,7 +40,7 @@ public class TrackerWorker implements Runnable{
 
                 System.out.print(tcpPacket.toString());
 
-                Carrier.sendTCPPacket(outputstream,tcpPacket);
+                carrier.sendTCPPacket(outputstream,tcpPacket);
             }
         }
 

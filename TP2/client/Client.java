@@ -14,6 +14,7 @@ public class Client{
 
     private Socket socket;
     private ClientUI clientUI;
+    private Carrier carrier;
     private final InetSocketAddress source;
     private final InetSocketAddress dest;
     private DataInputStream inputstream;
@@ -23,6 +24,7 @@ public class Client{
     public Client(Socket socket, String folder) throws IOException{
         this.socket = socket;
         this.clientUI = new ClientUI(folder);
+        this.carrier = Carrier.getInstance();
         this.source = (InetSocketAddress) socket.getLocalSocketAddress();
         this.dest = (InetSocketAddress) socket.getRemoteSocketAddress();
         this.inputstream = new DataInputStream(socket.getInputStream());
@@ -36,11 +38,11 @@ public class Client{
 
         System.out.println(tcpPacket.toString());
 
-        Carrier.sendTCPPacket(outputstream,tcpPacket);
+        carrier.sendTCPPacket(outputstream,tcpPacket);
 
         try{
 
-            while ((tcpPacket = Carrier.receiveTCPPacket(inputstream)) != null){
+            while ((tcpPacket = carrier.receiveTCPPacket(inputstream)) != null){
 
                 System.out.println(tcpPacket.toString());
 
@@ -53,7 +55,7 @@ public class Client{
                 tcpPacket = this.clientUI.getTCPPacket(this.source,this.dest);
 
                 System.out.println(tcpPacket.toString());
-                Carrier.sendTCPPacket(outputstream,tcpPacket);
+                carrier.sendTCPPacket(outputstream,tcpPacket);
             }
         }
 

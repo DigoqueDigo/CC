@@ -8,8 +8,17 @@ import packets.TCPPacket;
 
 public class Carrier{
 
+    private static Carrier singleton = null;
 
-    public static void sendTCPPacket(DataOutputStream outputstream, TCPPacket tcpPacket) throws IOException{
+    private Carrier() {};
+
+    public static Carrier getInstance(){
+        if (Carrier.singleton == null) Carrier.singleton = new Carrier();
+        return Carrier.singleton;
+    }
+
+
+    public void sendTCPPacket(DataOutputStream outputstream, TCPPacket tcpPacket) throws IOException{
         byte[] message = tcpPacket.serializeTCPPacket();
         outputstream.writeInt(message.length);
         outputstream.write(message);
@@ -17,7 +26,7 @@ public class Carrier{
     }
 
 
-    public static TCPPacket receiveTCPPacket(DataInputStream inputstream) throws Exception{
+    public TCPPacket receiveTCPPacket(DataInputStream inputstream) throws Exception{
         int packet_size = inputstream.readInt();
         byte[] message = new byte[packet_size];
         

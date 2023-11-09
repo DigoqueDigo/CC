@@ -26,6 +26,7 @@ public class PieceInfo implements Binary{
 
 
     public PieceInfo(byte[] data, int position, String file){
+        
         try{
             this.hash = PieceInfo.SHA1(data);
             this.position = position;
