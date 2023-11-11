@@ -2,14 +2,13 @@ package client.listener;
 import java.net.DatagramSocket;
 import carrier.UDPCarrier;
 import packets.UDPPacket;
+import packets.UDPPacket.UDPProtocol;
 
 
 public class Listener implements Runnable{
 
     public static final int DefaultPort = 54321;
-    
     private DatagramSocket socket;
-
 
     public Listener(DatagramSocket socket){
         this.socket = socket;
@@ -17,27 +16,36 @@ public class Listener implements Runnable{
 
     
     public void run(){
-
+        
         boolean hasNext = true;
         UDPCarrier carrier = UDPCarrier.getInstance();
-
-        while (hasNext) {
+        
+        while (hasNext){
             
             try{
-
+                
+                
                 for (UDPPacket packet : carrier.receiveUDPPacket(socket)){
+                    
+                    System.out.println("À ESCUTA NA PORTA: " + this.socket.getLocalPort() + this.socket.getLocalAddress().getHostAddress());
+                    System.out.println("LISTENER PACOTE RECEIVED");
+                    System.out.println(packet.toString());
 
-                    new Thread(
-                        new ListenerWorker(
-                            packet.getIP(),
-                            packet.getPort())
-                    ).start();
+                    if (packet.getProtocol() == UDPProtocol.HELLO){
+
+                        new Thread(
+                            new ListenerWorker(
+                                packet.getIP(),
+                                packet.getPort())
+                        ).start();
+                    }
                 }
             }
     
             catch (Exception e){
                 hasNext = false;
                 System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }

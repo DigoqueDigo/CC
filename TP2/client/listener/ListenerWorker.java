@@ -2,6 +2,7 @@ package client.listener;
 import java.io.FileInputStream;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,13 +17,15 @@ import packets.info.PieceInfo;
 
 public class ListenerWorker implements Runnable{
 
-    DatagramSocket socket;
+    private DatagramSocket socket;
+    private InetAddress address;
+    private int Port;
 
 
     public ListenerWorker(String IPaddress, int Port) throws Exception{
-        InetAddress address = InetAddress.getByName(IPaddress);
         this.socket = new DatagramSocket();
-        this.socket.connect(address,Port);
+        this.address = InetAddress.getByName(IPaddress);
+        this.Port = Port;
     }
 
 
@@ -34,9 +37,10 @@ public class ListenerWorker implements Runnable{
 
         for (int bytes_read, p = 0; (bytes_read = Reader.read(inputstream,data,data.length)) > 0; p++){
 
-            result.put(new PieceInfo(
-                Arrays.copyOf(data,bytes_read),p,file),
-                Arrays.copyOf(data,bytes_read));
+            result.put(
+                new PieceInfo(Arrays.copyOf(data,bytes_read),p,file),
+                Arrays.copyOf(data,bytes_read)
+            );
         }
 
         return result;
@@ -46,24 +50,47 @@ public class ListenerWorker implements Runnable{
     public void run(){
 
         try{
-
+            
+            Map<PieceInfo,byte[]> data;
             UDPCarrier carrier = UDPCarrier.getInstance();
-            List<UDPPacket> packets = carrier.receiveUDPPacket(socket); // recebe todas as pieces que o cliente pretende adquirir
-            Map<PieceInfo,byte[]> data = getDataFromFile(packets.get(0).getPiece().getFile());
+            List<UDPPacket> packets_receive = new ArrayList<>();
+            List<UDPPacket> packets_send = new ArrayList<>();
+            UDPPacket packet = new UDPPacket(UDPProtocol.HELLO); 
+            
+            packets_send.add(packet);
 
-            packets.clear();
-            data.entrySet().forEach(x -> {
+            System.out.println("LISTERNERWORKER -> DOWNLOADWORKER" + this.address + this.Port);
+            System.out.println(packet.toString());
+
+            socket.connect(this.address,this.Port);
+            carrier.sendUDPPacket(socket,packets_send); // enviar o hello para o downloadworker
+            socket.disconnect();
+            packets_send.clear();
+
+            packets_receive = carrier.receiveUDPPacket(socket); // recebe todas as pieces que o cliente pretende adquirir
+
+            System.out.println("LISTERNERWORKER <- DOWNLOADWORKER");
+            System.out.println(packets_receive.size());
+
+            if (packets_receive.get(0).getProtocol() != UDPProtocol.GET) throw new Exception("LISTENER WORKER NOT RECEIVE GET PROTOCOL");
+
+            data = getDataFromFile(packets_receive.get(0).getPiece().getFile());
+
+            for (UDPPacket element : packets_receive){
+
                 UDPPacket udpPacket = new UDPPacket(UDPProtocol.DATA);
-                udpPacket.setPiece(x.getKey());
-                udpPacket.setData(x.getValue());
-                packets.add(udpPacket);
-            });
+                udpPacket.setPiece(element.getPiece());
+                udpPacket.setData(data.get(udpPacket.getPiece()));
+                packets_send.add(udpPacket);
+            }
 
-            carrier.sendUDPPacket(socket,packets); // enviar os dados das pieces para o cliente
+            carrier.sendUDPPacket(socket,packets_send); // enviar os dados das pieces para o cliente
+            socket.disconnect();
         }
 
         catch (Exception e){
             System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

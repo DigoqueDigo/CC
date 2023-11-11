@@ -29,17 +29,17 @@ public class UDPPacket{
         this.IP = "";
         this.Port = 0;
         this.SeqNum = 0;
-        this.piece = new PieceInfo();
+        this.piece = null;
         this.data = new byte[0];        
     }
 
 
-    public UDPPacket(UDPProtocol protocol, String IP, int Port, PieceInfo piece, byte[] data){
+    private UDPPacket(UDPProtocol protocol, String IP, int Port, int SeqNum, PieceInfo piece, byte[] data){
         this.protocol = protocol;
         this.IP = IP;
         this.Port = Port;
-        this.SeqNum = 0;
-        this.piece = piece.clone();
+        this.SeqNum = SeqNum;
+        this.piece = (piece != null) ? piece.clone() : null;
         this.data = Arrays.copyOf(data,data.length);
     }
 
@@ -49,6 +49,7 @@ public class UDPPacket{
             this.protocol,
             this.IP,
             this.Port,
+            this.SeqNum,
             this.piece,
             this.data
         );
@@ -85,11 +86,6 @@ public class UDPPacket{
     }
 
 
-    public void setProtocol(UDPProtocol protocol){
-        this.protocol = protocol;
-    }
-
-
     public void setIP(String IP){
         this.IP = IP;
     }
@@ -117,7 +113,34 @@ public class UDPPacket{
 
     public boolean checkSHA1(){
         try {return this.piece.getHash().equals(PieceInfo.SHA1(this.data));}
-        catch (Exception e) {return false;}
+        catch (Exception e) {return true;}
+    }
+
+
+    public String toString(){
+
+        StringBuilder buffer = new StringBuilder();
+
+        buffer.append("UDPProtocolo: ").append(this.protocol.name());
+        buffer.append("\nIP source: ").append(this.IP);
+        buffer.append("\nPort source: ").append(this.Port);
+        buffer.append("\nSeqNum: ").append(this.SeqNum);
+        buffer.append("\nPayload Size: ").append(this.data.length);
+        if (this.piece != null) buffer.append("\n" + this.piece.toString());
+
+        return buffer.toString();
+    }
+
+
+    public boolean equals(Object obj){
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        UDPPacket that = (UDPPacket) obj;
+        return this.piece.equals(that.getPiece());
+    }
+
+
+    public int hashCode(){
+        return this.piece.hashCode();
     }
 
 
@@ -126,14 +149,19 @@ public class UDPPacket{
         byte[] data_piece;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         DataOutputStream dataoutputStream = new DataOutputStream(byteArrayOutputStream);
-
-        data_piece = this.piece.serialize();
-
+        
         dataoutputStream.writeUTF(this.protocol.name());
         dataoutputStream.writeUTF(this.IP);
         dataoutputStream.writeInt(this.Port);
-        dataoutputStream.writeInt(data_piece.length);
-        dataoutputStream.write(data_piece);
+        dataoutputStream.writeInt(this.SeqNum);
+        dataoutputStream.writeBoolean(this.piece != null);
+        
+        if (this.piece != null){
+            data_piece = this.piece.serialize();
+            dataoutputStream.writeInt(data_piece.length);
+            dataoutputStream.write(data_piece);
+        }
+
         dataoutputStream.write(this.data.length);
         dataoutputStream.write(this.data);
 
@@ -149,13 +177,18 @@ public class UDPPacket{
         UDPProtocol protocol = UDPProtocol.valueOf(dataInputStream.readUTF());
         String IP = dataInputStream.readUTF();
         int Port = dataInputStream.readInt();
+        int SeqNum = dataInputStream.readInt();
+        PieceInfo piece = null;
 
-        byte[] data_piece = new byte[dataInputStream.readInt()];
-        Reader.read(dataInputStream, data_piece, data_piece.length);
+        if (dataInputStream.readBoolean()){
+            byte[] data_piece = new byte[dataInputStream.readInt()];
+            Reader.read(dataInputStream, data_piece, data_piece.length);
+            piece = PieceInfo.deserialize(data_piece);
+        }
 
         byte[] data_message = new byte[dataInputStream.readInt()];
         Reader.read(dataInputStream,data_message,data_message.length);
 
-        return new UDPPacket(protocol,IP,Port,PieceInfo.deserialize(data_piece),data_message);
+        return new UDPPacket(protocol,IP,Port,SeqNum,piece,data_message);
     }
 }

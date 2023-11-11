@@ -11,19 +11,19 @@ import packets.info.PieceInfo;
 
 public class Downloader implements Runnable{
 
+    private String filename;
     private TCPPacket tcpPacket;
     private DownloadSchedule schedule;
-    private ArrayList<byte[]> file_buffer;
+    private List<byte[]> file_buffer;
     private FileOutputStream outputStream;
 
     
-    public Downloader(TCPPacket tcpPacket) throws IOException{
+    public Downloader(String filename, TCPPacket tcpPacket) throws IOException{
+        this.filename = filename;
         this.tcpPacket = tcpPacket;
         this.schedule = new DownloadSchedule();
         this.file_buffer = new ArrayList<byte[]>();
-        this.outputStream = new FileOutputStream(
-            tcpPacket.getToClient().getKeys().get(0).getFile()
-        );
+        this.outputStream = new FileOutputStream(filename);
     }
 
     
@@ -33,12 +33,15 @@ public class Downloader implements Runnable{
     
         for (PieceInfo pieceInfo : tcpPacket.getToClient().getKeys()){
 
-            List<String> IPaddresses = tcpPacket.getToClient().getValue(pieceInfo);
-          
-            this.schedule.addPieceInfo(IPaddresses.get(
-                random.nextInt(IPaddresses.size())),
-                pieceInfo
-            );
+            if (pieceInfo.getFile().equals(this.filename)){
+
+                List<String> IPaddresses = tcpPacket.getToClient().getValue(pieceInfo);
+            
+                this.schedule.addPieceInfo(
+                    IPaddresses.get(random.nextInt(IPaddresses.size())),
+                    pieceInfo
+                );
+            }
         }
     }
 
@@ -55,9 +58,8 @@ public class Downloader implements Runnable{
 
             int index = 0;
             this.initSchedule(this.tcpPacket);
-            this.file_buffer.ensureCapacity(this.schedule.getNumberOfPieces());;
-
             Thread[] threads = new Thread[this.schedule.size()];
+            this.file_buffer = new ArrayList<>(this.schedule.getNumberOfPieces());
 
             for (Map.Entry<String,List<PieceInfo>> element : this.schedule.entrySet()){
 
@@ -81,6 +83,7 @@ public class Downloader implements Runnable{
 
         catch (Exception e){
             System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

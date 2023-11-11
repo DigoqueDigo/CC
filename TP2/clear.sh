@@ -1,4 +1,6 @@
 rm client/*.class
+rm client/download/*.class
+rm client/listener/*.class
 rm carrier/*.class
 rm tracker/*.class
 rm tracker/containers/*.class

@@ -27,7 +27,8 @@ public class Client{
         Client.FOLDER = folder;
         this.socket = socket;
         this.clientUI = new ClientUI();
-        this.listener = new DatagramSocket(Listener.DefaultPort);
+        if (folder.equals("C1/")) this.listener = new DatagramSocket(Listener.DefaultPort);
+        else this.listener = new DatagramSocket(3333);
         this.inputstream = new DataInputStream(socket.getInputStream());
         this.outputstream = new DataOutputStream(socket.getOutputStream());
     }
@@ -72,6 +73,7 @@ public class Client{
 
         catch (Exception e){
             System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

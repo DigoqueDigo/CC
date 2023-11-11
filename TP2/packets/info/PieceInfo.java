@@ -17,13 +17,6 @@ public class PieceInfo implements Binary{
     private int position;
     private String file;
 
-    
-    public PieceInfo(){
-        this.hash = "";
-        this.file = "";
-        this.position = 0;
-    }
-
 
     public PieceInfo(String hash, int position, String file){
         this.hash = hash;
