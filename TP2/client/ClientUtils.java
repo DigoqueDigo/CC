@@ -35,11 +35,11 @@ public class ClientUtils{
     }
 
 
-    private static List<PieceInfo> getPieces(String file, String folder) throws IOException{
+    private static List<PieceInfo> getPieces(String file) throws IOException{
 
         byte[] data = new byte[PieceInfo.SIZE];
         List<PieceInfo> pieces = new ArrayList<PieceInfo>();
-        FileInputStream inputstream = new FileInputStream(folder + file);
+        FileInputStream inputstream = new FileInputStream(Client.FOLDER + file);
 
         for (int bytes_read, p = 0; (bytes_read = Reader.read(inputstream,data,data.length)) > 0; p++){
             pieces.add(new PieceInfo(Arrays.copyOf(data,bytes_read),p,file));
@@ -50,38 +50,38 @@ public class ClientUtils{
     }
 
 
-    public static TCPPacket getHELLOTCPPacket(String folder, InetSocketAddress source, InetSocketAddress dest){
+    public static TCPPacket getHELLOTCPPacket(InetSocketAddress source, InetSocketAddress dest){
 
         TCPPacket tcpPacket;
         ToTracker toTracker = new ToTracker();
 
-        List<FileInfo> files = ClientUtils.getFiles(folder)
+        List<FileInfo> files = ClientUtils.getFiles(Client.FOLDER)
                                         .stream()
-                                        .map(x -> new FileInfo(x,new File(folder + x).length()))
+                                        .map(x -> new FileInfo(x,new File(Client.FOLDER + x).length()))
                                         .collect(Collectors.toList());
 
         for (FileInfo file : files){
 
-            try {toTracker.put(file,ClientUtils.getPieces(file.getName(),folder));}
+            try {toTracker.put(file,ClientUtils.getPieces(file.getName()));}
 
             catch (Exception e){
                 System.out.println("ERROR while defining pieces");}
         }
 
         tcpPacket = new TCPPacket(
-                            Protocol.HELLO,
-                            source.getAddress().getHostAddress(),
-                            dest.getAddress().getHostAddress(),
-                            source.getPort(),
-                            dest.getPort(),
-                            TYPE.TOTRACKER);
+            Protocol.HELLO,
+            source.getAddress().getHostAddress(),
+            dest.getAddress().getHostAddress(),
+            source.getPort(),
+            dest.getPort(),
+            TYPE.TOTRACKER);
 
         tcpPacket.setToTracker(toTracker);
         return tcpPacket;
     }
 
 
-    public static TCPPacket getTCPPacket(String line, String folder, InetSocketAddress source, InetSocketAddress dest) throws FileAlreadyExistsException{
+    public static TCPPacket getTCPPacket(String line, InetSocketAddress source, InetSocketAddress dest) throws FileAlreadyExistsException{
 
         TCPPacket tcpPacket;
         ToTracker toTracker = new ToTracker();
@@ -93,7 +93,7 @@ public class ClientUtils{
 
                 String existFile = Stream.of(tokens)
                                         .skip(1)
-                                        .filter(x -> ClientUtils.fileAlredyExists(folder + x))
+                                        .filter(x -> ClientUtils.fileAlredyExists(Client.FOLDER + x))
                                         .findFirst()
                                         .orElse(null);
 
@@ -110,12 +110,12 @@ public class ClientUtils{
         }
 
         tcpPacket = new TCPPacket(
-                    Protocol.valueOf(tokens[0]),
-                    source.getAddress().getHostAddress(),
-                    dest.getAddress().getHostAddress(),
-                    source.getPort(),
-                    dest.getPort(),
-                    TYPE.TOTRACKER);
+            Protocol.valueOf(tokens[0]),
+            source.getAddress().getHostAddress(),
+            dest.getAddress().getHostAddress(),
+            source.getPort(),
+            dest.getPort(),
+            TYPE.TOTRACKER);
 
         tcpPacket.setToTracker(toTracker);
         return tcpPacket;

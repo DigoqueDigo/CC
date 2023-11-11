@@ -22,6 +22,8 @@ public abstract class Message<T,V> implements Binary{
         return this.type.name();
     }
 
+    public abstract int size();
+
     public abstract List<T> getKeys();
 
     public abstract List<V> getValue(T key);

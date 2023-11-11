@@ -17,6 +17,13 @@ public class PieceInfo implements Binary{
     private int position;
     private String file;
 
+    
+    public PieceInfo(){
+        this.hash = "";
+        this.file = "";
+        this.position = 0;
+    }
+
 
     public PieceInfo(String hash, int position, String file){
         this.hash = hash;
@@ -37,6 +44,11 @@ public class PieceInfo implements Binary{
     }
 
 
+    public PieceInfo clone(){
+        return new PieceInfo(this.hash,this.position,this.file);
+    }
+
+
     public String getHash(){
         return this.hash;
     }
@@ -52,20 +64,15 @@ public class PieceInfo implements Binary{
     }
 
 
-    private static String SHA1(byte[] data) throws NoSuchAlgorithmException{
+    public static String SHA1(byte[] data) throws NoSuchAlgorithmException{
         MessageDigest message = MessageDigest.getInstance("SHA-1");
         return byteArrayToHex(message.digest(data));
     }
 
 
     private static String byteArrayToHex(final byte[] hash){
-        
         StringBuilder buffer = new StringBuilder();
-
-        for (byte b : hash){
-            buffer.append(String.format("%02x", b));
-        }
-
+        for (byte b : hash) {buffer.append(String.format("%02x", b));}
         return buffer.toString();
     }
 

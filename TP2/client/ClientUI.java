@@ -11,19 +11,17 @@ public class ClientUI{
     private static final String RESET = "\033[0m";
     private static final String RED = "\033[1;31m";
     public static final String YELLOW_BOLD = "\033[1;33m";
-    
-    private String folder;
+
     private BufferedReader scanner;
 
 
-    public ClientUI(String folder){
-        this.folder = folder;
+    public ClientUI(){
         this.scanner = new BufferedReader(new InputStreamReader(System.in));
     }
 
 
     public TCPPacket getHELLOTCPPacket(InetSocketAddress source, InetSocketAddress dest){
-        return ClientUtils.getHELLOTCPPacket(this.folder,source,dest);
+        return ClientUtils.getHELLOTCPPacket(source,dest);
     }
 
 
@@ -38,7 +36,7 @@ public class ClientUI{
             try {
                 String line = scanner.readLine();
                 if (line != null && line.length() > 0){
-                    tcpPacket = ClientUtils.getTCPPacket(line,folder,source,dest);
+                    tcpPacket = ClientUtils.getTCPPacket(line,source,dest);
                 }
             }
 
