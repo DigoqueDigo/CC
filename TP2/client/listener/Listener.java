@@ -23,8 +23,7 @@ public class Listener implements Runnable{
         while (hasNext){
             
             try{
-                
-                
+
                 for (UDPPacket packet : carrier.receiveUDPPacket(socket)){
                     
                     System.out.println("À ESCUTA NA PORTA: " + this.socket.getLocalPort() + this.socket.getLocalAddress().getHostAddress());
@@ -35,8 +34,8 @@ public class Listener implements Runnable{
 
                         new Thread(
                             new ListenerWorker(
-                                packet.getIP(),
-                                packet.getPort())
+                                packet.getIPsource(),
+                                packet.getPortsource())
                         ).start();
                     }
                 }
