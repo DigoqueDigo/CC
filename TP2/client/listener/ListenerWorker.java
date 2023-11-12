@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import carrier.Reader;
 import carrier.UDPCarrier;
 import client.Client;
@@ -28,20 +29,25 @@ public class ListenerWorker implements Runnable{
     }
 
 
-    private Map<PieceInfo,byte[]> getDataFromFile(String file) throws Exception{
+    private Map<PieceInfo,byte[]> getDataFromFile(String file, List<PieceInfo> pieces) throws Exception{
 
+        int index;
         byte[] data = new byte[PieceInfo.SIZE];
         Map<PieceInfo,byte[]> result = new HashMap<PieceInfo,byte[]>();
         FileInputStream inputstream = new FileInputStream(Client.FOLDER + file);
 
         for (int bytes_read, p = 0; (bytes_read = Reader.read(inputstream,data,data.length)) > 0; p++){
 
-            result.put(
-                new PieceInfo(Arrays.copyOf(data,bytes_read),p,file),
-                Arrays.copyOf(data,bytes_read)
-            );
+            PieceInfo piece = new PieceInfo(Arrays.copyOf(data,bytes_read),p,file);
+
+            if ((index = pieces.indexOf(piece)) != -1){
+
+                piece.setPosition(pieces.get(index).getPosition());
+                result.put(piece,Arrays.copyOf(data,bytes_read));
+            }
         }
 
+        inputstream.close();
         return result;
     }
 
@@ -87,7 +93,10 @@ public class ListenerWorker implements Runnable{
             System.out.println("------------------------------------------------");
             System.out.println("LISTENERWORKER -> DOWNLOADWORKER");
 
-            fileData = getDataFromFile(packets_receive.get(0).getPiece().getFile());
+            fileData = getDataFromFile(
+                packets_receive.get(0).getPiece().getFile(),
+                packets_receive.stream().map(x -> x.getPiece()).collect(Collectors.toList())    
+            );
 
             for (UDPPacket element : packets_receive){
 

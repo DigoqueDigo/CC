@@ -1,50 +1,27 @@
 package client.download;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import packets.TCPPacket;
+import client.Client;
 import packets.info.PieceInfo;
 
 
 public class Downloader implements Runnable{
 
-    private String filename;
-    private TCPPacket tcpPacket;
     private DownloadSchedule schedule;
     private FileOutputStream outputStream;
     private ConcurrentMap<Integer,byte[]> buffer;
 
     
-    public Downloader(String filename, TCPPacket tcpPacket) throws IOException{
-        this.filename = filename;
-        this.tcpPacket = tcpPacket;
-        this.schedule = new DownloadSchedule();
-        this.outputStream = new FileOutputStream(filename);
+    public Downloader(String filename, DownloadSchedule schedule) throws IOException{
+        this.schedule = schedule;
+        this.outputStream = new FileOutputStream(Client.FOLDER + filename);
         this.buffer = new ConcurrentHashMap<Integer,byte[]>();
-    }
-
-    
-    private void initSchedule(TCPPacket tcpPacket){
-
-        Random random = new Random();
-    
-        for (PieceInfo pieceInfo : tcpPacket.getToClient().getKeys()){
-
-            if (pieceInfo.getFile().equals(this.filename)){
-
-                List<String> IPaddresses = tcpPacket.getToClient().getValue(pieceInfo);
-            
-                this.schedule.addPieceInfo(
-                    IPaddresses.get(random.nextInt(IPaddresses.size())),
-                    pieceInfo
-                );
-            }
-        }
     }
 
     
@@ -54,7 +31,6 @@ public class Downloader implements Runnable{
             try {outputStream.write(x);}
             catch (Exception e) {System.out.println(e.getMessage());}
         });
-        
         outputStream.close();
     }
 
@@ -63,26 +39,21 @@ public class Downloader implements Runnable{
 
         try{
 
-            int index = 0;
-            this.initSchedule(this.tcpPacket);
-            Thread[] threads = new Thread[this.schedule.size()];
+            List<Thread> threads = new ArrayList<Thread>();
 
             for (Map.Entry<String,List<PieceInfo>> element : this.schedule.entrySet()){
 
-                threads[index] = new Thread(
+                threads.add(new Thread(
                     new DownloaderWorker(
                         element.getKey(),
                         element.getValue(),
-                        buffer
-                    )
-                );
+                        buffer)
+                ));
                 
-                threads[index++].start();
+                threads.get(threads.size()-1).start();
             }
 
-            for (int p = 0; p < index; p++){
-                threads[p].join();
-            }
+            for (Thread thread : threads) {thread.join();}
 
             this.writeToFile(outputStream,buffer);
         }

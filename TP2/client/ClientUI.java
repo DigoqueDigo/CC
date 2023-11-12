@@ -12,16 +12,18 @@ public class ClientUI{
     private static final String RED = "\033[1;31m";
     public static final String YELLOW_BOLD = "\033[1;33m";
 
+    private ClientUtils clientUtils;
     private BufferedReader scanner;
 
 
     public ClientUI(){
+        this.clientUtils = ClientUtils.getInstance();
         this.scanner = new BufferedReader(new InputStreamReader(System.in));
     }
 
 
     public TCPPacket getHELLOTCPPacket(InetSocketAddress source, InetSocketAddress dest){
-        return ClientUtils.getHELLOTCPPacket(source,dest);
+        return this.clientUtils.getHELLOTCPPacket(source,dest);
     }
 
 
@@ -36,7 +38,7 @@ public class ClientUI{
             try {
                 String line = scanner.readLine();
                 if (line != null && line.length() > 0){
-                    tcpPacket = ClientUtils.getTCPPacket(line,source,dest);
+                    tcpPacket = this.clientUtils.getTCPPacket(line,source,dest);
                 }
             }
 

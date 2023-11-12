@@ -3,11 +3,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
-import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import carrier.Carrier;
-import client.listener.Listener;
 import packets.TCPPacket;
 import packets.TCPPacket.Protocol;
 
@@ -18,17 +16,16 @@ public class Client{
 
     private Socket socket;
     private ClientUI clientUI;
-    private DatagramSocket listener; 
+    private ClienteControler clienteControler; 
     private DataInputStream inputstream;
     private DataOutputStream outputstream;
-
+    
 
     public Client(Socket socket, String folder) throws IOException{
         Client.FOLDER = folder;
         this.socket = socket;
         this.clientUI = new ClientUI();
-        if (folder.equals("C1/")) this.listener = new DatagramSocket(Listener.DefaultPort);
-        else this.listener = new DatagramSocket(3333);
+        this.clienteControler = new ClienteControler();
         this.inputstream = new DataInputStream(socket.getInputStream());
         this.outputstream = new DataOutputStream(socket.getOutputStream());
     }
@@ -39,8 +36,6 @@ public class Client{
         Carrier carrier = Carrier.getInstance();
         InetSocketAddress source = (InetSocketAddress) socket.getLocalSocketAddress();
         InetSocketAddress dest = (InetSocketAddress) socket.getRemoteSocketAddress();
-
-        new Thread(new Listener(listener)).start();
         TCPPacket tcpPacket = this.clientUI.getHELLOTCPPacket(source,dest);
 
         System.out.println(tcpPacket.toString());
@@ -53,11 +48,13 @@ public class Client{
 
                 System.out.println(tcpPacket.toString());
 
-                ClienteControler.handler(tcpPacket);
+                this.clienteControler.handler(tcpPacket);
 
-                if (tcpPacket.getProtocol() == Protocol.EXITACK) throw new EOFException();
+                if (tcpPacket.getProtocol() == Protocol.GETAK){
+                    tcpPacket = this.clientUI.getHELLOTCPPacket(source,dest);
+                }
 
-                tcpPacket = this.clientUI.getTCPPacket(source,dest);
+                else tcpPacket = this.clientUI.getTCPPacket(source,dest);
 
                 System.out.println(tcpPacket.toString());
                 carrier.sendTCPPacket(outputstream,tcpPacket);
@@ -68,7 +65,6 @@ public class Client{
             this.inputstream.close();
             this.outputstream.close();
             this.socket.close();
-            this.listener.close();
         }
 
         catch (Exception e){

@@ -42,6 +42,11 @@ public class PieceInfo implements Binary{
     }
 
 
+    public void setPosition(int position){
+        this.position = position;
+    }
+
+
     public String getHash(){
         return this.hash;
     }

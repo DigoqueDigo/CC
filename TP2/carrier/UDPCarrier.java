@@ -13,8 +13,8 @@ import packets.UDPPacket.UDPProtocol;
 
 public class UDPCarrier{
 
-    private static final int SENDER_TIMEOUT = 1000;
-    private static final int RECEIVER_TIMEOUT = 2000;
+    private static final int SENDER_TIMEOUT = 25;
+    private static final int RECEIVER_TIMEOUT = 100;
     private static final int WINDOW_SIZE = 10;
     private static UDPCarrier singleton = null;
 
@@ -120,7 +120,9 @@ public class UDPCarrier{
                     datagram_send.setSocketAddress(datagram_receive.getSocketAddress());
                     datagram_send.setData(udpPacket_send.serializeUDPPacket());
                     socket.send(datagram_send);
-               }
+                }
+
+                else System.out.println("PACOTE CURROMPIDO");
             }
 
             catch (SocketTimeoutException e){
@@ -128,7 +130,6 @@ public class UDPCarrier{
             }
         }
 
-        System.out.println("RESULT SIZE: " + result.size());
         return result;
     }
 }
