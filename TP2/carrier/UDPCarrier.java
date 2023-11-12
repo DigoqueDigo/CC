@@ -7,7 +7,6 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import packets.UDPPacket;
 import packets.UDPPacket.UDPProtocol;
 
@@ -46,10 +45,6 @@ public class UDPCarrier{
            
         setSeqNums(udpPackets);
         socket.setSoTimeout(UDPCarrier.SENDER_TIMEOUT);
-    
-    //    System.out.println("A ENVIAR PARA: " + socket.getInetAddress().getHostAddress() + " " + socket.getPort());
-    //    System.out.println("ENTROU UDPCARRIER " + ACKList.size());
-    //    System.out.flush();
 
         while (udpPackets.size() > 0){
 
@@ -60,25 +55,15 @@ public class UDPCarrier{
                 if (index < udpPackets.size()){
 
                     udpPacket_send = udpPackets.get(index);
-                    
                     packets_send.setAddress(InetAddress.getByName(udpPacket_send.getIPdest()));
                     packets_send.setPort(udpPacket_send.getPortdest());
                     packets_send.setData(udpPacket_send.serializeUDPPacket());
                     socket.send(packets_send);
-
-            //        System.out.println("UDPCARRIER PACOTE ENVIADO");
-            //        System.out.println("INDEX: " + index);
-            //        System.out.println(udpPacket_send);
-            //        System.out.flush();
-
-                    System.out.println("TRY SEND");
                 }
 
                 if (index >= window_size){
 
                     try{
-
-            //            System.out.println("IINDEX: " + index);
                         
                         socket.receive(packets_receive);
                         udpPacket_receive = UDPPacket.deserializeUDPPacket(packets_receive.getData());
@@ -86,20 +71,13 @@ public class UDPCarrier{
                         if (udpPacket_receive.getProtocol() == UDPProtocol.ACK){
                             udpPackets.remove(udpPacket_receive);
                             index--;
-             //               System.out.println("SENDER RECEIVE ACK");
                         }
                     }
 
-                    catch (SocketTimeoutException e){
-         //               System.out.println("SENDER TIMEOUT");
-                    }
+                    catch (SocketTimeoutException e){}
                 }
-
-       //         System.out.println("---------------------------------");
             }
         }
-
-    //    System.out.println("ENVIADO COM SUCESSO");
     }
 
 
@@ -109,8 +87,8 @@ public class UDPCarrier{
         UDPPacket udpPacket_send;
         UDPPacket udpPacket_receive;
         List<UDPPacket> result = new ArrayList<UDPPacket>(0);
-        DatagramPacket packets_receive = new DatagramPacket(new byte[UDPPacket.MaxSize],UDPPacket.MaxSize);
-        DatagramPacket packets_send = new DatagramPacket(new byte[UDPPacket.MaxSize],UDPPacket.MaxSize);
+        DatagramPacket datagram_receive = new DatagramPacket(new byte[UDPPacket.MaxSize],UDPPacket.MaxSize);
+        DatagramPacket datagram_send = new DatagramPacket(new byte[UDPPacket.MaxSize],UDPPacket.MaxSize);
 
         socket.setSoTimeout(UDPCarrier.RECEIVER_TIMEOUT);
 
@@ -118,16 +96,13 @@ public class UDPCarrier{
 
             try{
 
-             //   System.out.println("À ESCUTA");
-                socket.receive(packets_receive);
-                udpPacket_receive = UDPPacket.deserializeUDPPacket(packets_receive.getData());
+                socket.receive(datagram_receive);
+                udpPacket_receive = UDPPacket.deserializeUDPPacket(datagram_receive.getData());
 
                 if (udpPacket_receive.checkSHA1()){
-
-                   // System.out.print("Packet received: " + udpPacket_receive.toString());
                     
                     if (!result.contains(udpPacket_receive)){
-                        udpPacket_receive.setIPsource(packets_receive.getSocketAddress());
+                        udpPacket_receive.setIPsource(datagram_receive.getSocketAddress());
                         result.add(udpPacket_receive.clone());
                     }
 
@@ -142,9 +117,9 @@ public class UDPCarrier{
                     udpPacket_send.setSeqNum(udpPacket_receive.getSeqNum());
                     udpPacket_send.setData(new byte[0]);
                 
-                    packets_send.setSocketAddress(packets_receive.getSocketAddress());
-                    packets_send.setData(udpPacket_send.serializeUDPPacket());
-                    socket.send(packets_send);
+                    datagram_send.setSocketAddress(datagram_receive.getSocketAddress());
+                    datagram_send.setData(udpPacket_send.serializeUDPPacket());
+                    socket.send(datagram_send);
                }
             }
 

@@ -53,7 +53,6 @@ public class DownloaderWorker implements Runnable{
 
         try{
 
-
             UDPPacket udpPacket;
             UDPCarrier carrier = UDPCarrier.getInstance();
             List<UDPPacket> packets_send = new ArrayList<UDPPacket>();
@@ -67,49 +66,49 @@ public class DownloaderWorker implements Runnable{
                 Listener.DefaultPort
             );
 
+            System.out.println("DOWNLOADERWORKER -> LISTENER");
+
             packets_send.add(udpPacket);
             carrier.sendUDPPacket(socket,packets_send); // envia para o listener
-      //      System.out.println(System.currentTimeMillis());
-     
-            //      System.out.println(socket.getLocalAddress().getHostAddress());
-            //      System.out.println(socket.getLocalPort());
-            
             packets_send.clear();
-
-     //       System.out.println(socket.getLocalAddress().getHostAddress());
-      //      System.out.println(socket.getLocalPort());
-
             
-            System.out.println("DOWNLOADERWORKER -> Listener");
-            System.out.println(udpPacket.toString());
+            System.out.println(udpPacket);
 
-        //    Thread.sleep(2000);
-
-             while (packets_receive.size() == 0){
+            while (packets_receive.size() == 0){
                 packets_receive = carrier.receiveUDPPacket(socket);
-             } // recebe do listenerWorker
-
+            }
 
             udpPacket = packets_receive.get(0);
             packets_receive.clear();
 
-            System.out.println("Listener -> DOWNLOADERWORKER");
-            System.out.println(udpPacket.toString());
+            System.out.println("DOWNLOADERWORKER <- LISTENERWORKER");
+            System.out.println(udpPacket);
 
-            System.out.println("---------------------");
+            System.out.println("------------------------------------------------");
+            System.out.println("DOWNLOADERWORKER -> LISTENERWORKER");
+            
             packets_send = this.createUDPPacketsList(this.pieces,udpPacket.getIPsource(),udpPacket.getPortsource());
             packets_send.forEach(x -> System.out.println(x));
 
+            System.out.println("------------------------------------------------");
+            
             carrier.sendUDPPacket(socket,packets_send); // enviar as pieces que quero para o listenerWorker
-            
             packets_send.clear();
-            System.out.println("A recebe pacotes");
-            
+
             while (packets_receive.size() == 0){
                 packets_receive = carrier.receiveUDPPacket(socket); // receber as pieces enviadas a partir do listenerWorker
             }
 
+            System.out.println("------------------------------------------------");
+            System.out.println("DOWNLOADERWORKER <- LISTENERWORKER");
+
+            packets_receive.forEach(x -> System.out.println(x));
+
+            System.out.println("------------------------------------------------");
+
             packets_receive.forEach(x -> this.buffer.put(x.getPiece().getPosition(),x.getData()));
+            packets_receive.clear();
+            this.socket.close();
         }
 
         catch (Exception e){

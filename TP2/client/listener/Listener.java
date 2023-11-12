@@ -25,9 +25,8 @@ public class Listener implements Runnable{
             try{
 
                 for (UDPPacket packet : carrier.receiveUDPPacket(socket)){
-                    
-                    System.out.println("À ESCUTA NA PORTA: " + this.socket.getLocalPort() + this.socket.getLocalAddress().getHostAddress());
-                    System.out.println("LISTENER PACOTE RECEIVED");
+
+                    System.out.println("LISTENER <- DOWNLOADWORKER");
                     System.out.println(packet.toString());
 
                     if (packet.getProtocol() == UDPProtocol.HELLO){
@@ -35,8 +34,8 @@ public class Listener implements Runnable{
                         new Thread(
                             new ListenerWorker(
                                 packet.getIPsource(),
-                                packet.getPortsource())
-                        ).start();
+                                packet.getPortsource()))
+                            .start();
                     }
                 }
             }

@@ -51,7 +51,7 @@ public class ListenerWorker implements Runnable{
         try{
             
             UDPPacket packet;
-            Map<PieceInfo,byte[]> data;
+            Map<PieceInfo,byte[]> fileData;
             UDPCarrier carrier = UDPCarrier.getInstance();
             List<UDPPacket> packets_receive = new ArrayList<>();
             List<UDPPacket> packets_send = new ArrayList<>();
@@ -67,29 +67,29 @@ public class ListenerWorker implements Runnable{
             packets_send.add(packet);
             
             System.out.println("LISTERNERWORKER -> DOWNLOADWORKER");
-            System.out.println(packet.toString());
-            
-            
-            System.out.println(System.currentTimeMillis());
+            System.out.println(packet);
+
+
             carrier.sendUDPPacket(socket,packets_send); // enviar o hello para o downloadworker
             packets_send.clear();
-
-            System.out.println("ENVIADO");
 
             while (packets_receive.size() == 0){
                 packets_receive = carrier.receiveUDPPacket(socket); // recebe todas as pieces que o cliente pretende adquirir
             }
 
-            System.out.println("LISTERNERWORKER <- DOWNLOADWORKER");
-            System.out.println(packets_receive.size());
+            System.out.println("LISTENERWORKER <- DOWNLOADWORKER");
+            System.out.println("------------------------------------------------");
 
-            if (packets_receive.get(0).getProtocol() != UDPProtocol.GET) throw new Exception("LISTENER WORKER NOT RECEIVE GET PROTOCOL");
+            packets_receive.forEach(x -> System.out.println(x));
+            System.out.println("------------------------------------------------");
 
-            data = getDataFromFile(packets_receive.get(0).getPiece().getFile());
+
+            System.out.println("------------------------------------------------");
+            System.out.println("LISTENERWORKER -> DOWNLOADWORKER");
+
+            fileData = getDataFromFile(packets_receive.get(0).getPiece().getFile());
 
             for (UDPPacket element : packets_receive){
-
-                System.out.println(element);
 
                 UDPPacket udpPacket = new UDPPacket(
                     UDPProtocol.DATA,
@@ -100,12 +100,17 @@ public class ListenerWorker implements Runnable{
                 );
 
                 udpPacket.setPiece(element.getPiece());
-                udpPacket.setData(data.get(udpPacket.getPiece()));
+                udpPacket.setData(fileData.get(udpPacket.getPiece()));
                 packets_send.add(udpPacket);
                 System.out.println(udpPacket);
             }
 
+            System.out.println("------------------------------------------------");
+
             carrier.sendUDPPacket(socket,packets_send); // enviar os dados das pieces para o cliente
+            packets_send.clear();
+            packets_receive.clear();
+            this.socket.close();
         }
 
         catch (Exception e){
