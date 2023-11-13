@@ -55,6 +55,8 @@ public class ListenerWorker implements Runnable{
     public void run(){
 
         try{
+
+        //    System.out.println("LISTENERWORKER INICIADO");
             
             UDPPacket packet;
             Map<PieceInfo,byte[]> fileData;
@@ -72,8 +74,8 @@ public class ListenerWorker implements Runnable{
             
             packets_send.add(packet);
             
-            System.out.println("LISTERNERWORKER -> DOWNLOADWORKER");
-            System.out.println(packet);
+        //    System.out.println("LISTERNERWORKER -> DOWNLOADWORKER");
+        //    System.out.println(packet);
 
 
             carrier.sendUDPPacket(socket,packets_send); // enviar o hello para o downloadworker
@@ -83,15 +85,15 @@ public class ListenerWorker implements Runnable{
                 packets_receive = carrier.receiveUDPPacket(socket); // recebe todas as pieces que o cliente pretende adquirir
             }
 
-            System.out.println("LISTENERWORKER <- DOWNLOADWORKER");
-            System.out.println("------------------------------------------------");
+        //    System.out.println("LISTENERWORKER <- DOWNLOADWORKER");
+        //    System.out.println("------------------------------------------------");
 
-            packets_receive.forEach(x -> System.out.println(x));
-            System.out.println("------------------------------------------------");
+        //    packets_receive.forEach(x -> System.out.println(x));
+        //    System.out.println("------------------------------------------------");
 
 
-            System.out.println("------------------------------------------------");
-            System.out.println("LISTENERWORKER -> DOWNLOADWORKER");
+        //    System.out.println("------------------------------------------------");
+        //    System.out.println("LISTENERWORKER -> DOWNLOADWORKER");
 
             fileData = getDataFromFile(
                 packets_receive.get(0).getPiece().getFile(),
@@ -111,20 +113,21 @@ public class ListenerWorker implements Runnable{
                 udpPacket.setPiece(element.getPiece());
                 udpPacket.setData(fileData.get(udpPacket.getPiece()));
                 packets_send.add(udpPacket);
-                System.out.println(udpPacket);
+            //    System.out.println(udpPacket);
             }
 
-            System.out.println("------------------------------------------------");
+        //    System.out.println("------------------------------------------------");
 
             carrier.sendUDPPacket(socket,packets_send); // enviar os dados das pieces para o cliente
             packets_send.clear();
             packets_receive.clear();
             this.socket.close();
+
+        //    System.out.println("LISTENERWORKER FINALIZADO");
         }
 
         catch (Exception e){
             System.out.println(e.getMessage());
-            e.printStackTrace();
         }
     }
 }

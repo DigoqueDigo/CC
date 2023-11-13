@@ -109,7 +109,7 @@ public class ClientUtils{
 
                 String existFile = Stream.of(tokens)
                                         .skip(1)
-                                        .filter(x -> fileAlredyExists(Client.FOLDER + x))
+                                        .filter(x -> fileAlredyExists(x))
                                         .findFirst()
                                         .orElse(null);
 

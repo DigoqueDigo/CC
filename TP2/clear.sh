@@ -1,4 +1,5 @@
 rm client/*.class
+rm client/schedule/*.class
 rm client/download/*.class
 rm client/listener/*.class
 rm carrier/*.class

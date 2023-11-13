@@ -2,18 +2,17 @@ package client;
 import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import client.download.DownloadSchedule;
 import client.download.Downloader;
+import client.schedule.Schedule;
 import packets.TCPPacket;
 
 
 public class ClienteControler{
 
-    public ClienteControler(){}
+    private Schedule schedule;
 
-    private List<String> getFilesName(TCPPacket tcpPacket){
-        return tcpPacket.getToClient().getKeys().stream().map(x -> x.getFile()).distinct().collect(Collectors.toList());
+    public ClienteControler(){
+        this.schedule = new Schedule();
     }
 
     public void handler(TCPPacket tcpPacket) throws Exception{
@@ -22,14 +21,18 @@ public class ClienteControler{
 
             case GETAK:
 
+                System.out.println(ClientUI.YELLOW_BOLD + "A escalonar blocos..." + ClientUI.RESET);
+                this.schedule.fillSchedule(tcpPacket);
                 List<Thread> threads = new ArrayList<Thread>();
 
-                for (String filename : getFilesName(tcpPacket)){
+                for (String filename : this.schedule.getKeys()){
                     
-                    DownloadSchedule schedule = new DownloadSchedule();
-                    schedule.fillSchedule(tcpPacket,filename);
+                    threads.add(new Thread(
+                        new Downloader(
+                            filename,
+                            this.schedule.getValue(filename))
+                    ));
                     
-                    threads.add(new Thread(new Downloader(filename,schedule)));
                     threads.get(threads.size()-1).start();
                 }
 

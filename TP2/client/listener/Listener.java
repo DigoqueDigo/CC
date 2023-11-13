@@ -26,8 +26,8 @@ public class Listener implements Runnable{
 
                 for (UDPPacket packet : carrier.receiveUDPPacket(socket)){
 
-                    System.out.println("LISTENER <- DOWNLOADWORKER");
-                    System.out.println(packet.toString());
+        //            System.out.println("LISTENER <- DOWNLOADWORKER");
+        //            System.out.println(packet.toString());
 
                     if (packet.getProtocol() == UDPProtocol.HELLO){
 
@@ -43,7 +43,6 @@ public class Listener implements Runnable{
             catch (Exception e){
                 hasNext = false;
                 System.out.println(e.getMessage());
-                e.printStackTrace();
             }
         }
     }

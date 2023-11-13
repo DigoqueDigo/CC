@@ -8,8 +8,8 @@ import packets.TCPPacket;
 
 public class ClientUI{
 
-    private static final String RESET = "\033[0m";
-    private static final String RED = "\033[1;31m";
+    public static final String RESET = "\033[0m";
+    public static final String RED = "\033[1;31m";
     public static final String YELLOW_BOLD = "\033[1;33m";
 
     private ClientUtils clientUtils;
