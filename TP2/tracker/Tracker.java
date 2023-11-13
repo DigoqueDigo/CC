@@ -14,11 +14,11 @@ public class Tracker{
         Socket socket;
         ServerSocket serversocket = new ServerSocket(DefaultPort);
         TrackerContainer trackercontainer = new TrackerContainer();
-        TrackerWorkerControler trackerworkercontroler = new TrackerWorkerControler(trackercontainer);
+        TrackerWorkerController trackerworkercontroller = new TrackerWorkerController(trackercontainer);
 
         while ((socket = serversocket.accept()) != null){
 
-            Thread trackerworker = new Thread(new TrackerWorker(socket,trackerworkercontroler));
+            Thread trackerworker = new Thread(new TrackerWorker(socket,trackerworkercontroller));
             trackerworker.start();
         }
 

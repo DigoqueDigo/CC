@@ -13,7 +13,7 @@ import packets.messages.ToTracker;
 import packets.messages.Message.TYPE;
 
 
-public class TCPPacket{
+public class TCPPacket implements Binary{
 
     public enum Protocol {HELLO, GET, EXIT, HELLOACK, GETAK, EXITACK, ACK};
 
@@ -91,7 +91,7 @@ public class TCPPacket{
     }
 
 
-    public byte[] serializeTCPPacket() throws IOException{
+    public byte[] serialize() throws IOException{
 
         byte[] data_message;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -115,7 +115,7 @@ public class TCPPacket{
     }
 
 
-    public static TCPPacket deserializeTCPacket(byte[] data) throws IOException{
+    public static TCPPacket deserialize(byte[] data) throws IOException{
 
         TCPPacket result;
         byte[] data_message;

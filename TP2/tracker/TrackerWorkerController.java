@@ -6,12 +6,12 @@ import packets.messages.Message.TYPE;
 import tracker.containers.TrackerContainer;
 
 
-public class TrackerWorkerControler{
+public class TrackerWorkerController{
 
     private TrackerContainer trackercontainer;
 
 
-    public TrackerWorkerControler(TrackerContainer trackercontainer){
+    public TrackerWorkerController(TrackerContainer trackercontainer){
         this.trackercontainer = trackercontainer;
     }
 

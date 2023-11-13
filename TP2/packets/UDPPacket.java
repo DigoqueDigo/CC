@@ -11,7 +11,7 @@ import carrier.Reader;
 import packets.info.PieceInfo;
 
 
-public class UDPPacket{
+public class UDPPacket implements Binary{
 
     public static final int MaxSize = 4096;
 
@@ -167,7 +167,7 @@ public class UDPPacket{
     }
 
 
-    public byte[] serializeUDPPacket() throws IOException{
+    public byte[] serialize() throws IOException{
 
         byte[] data_piece;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -194,7 +194,7 @@ public class UDPPacket{
     }
 
 
-    public static UDPPacket deserializeUDPPacket(byte[] data) throws IOException{
+    public static UDPPacket deserialize(byte[] data) throws IOException{
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
         DataInputStream dataInputStream = new DataInputStream(byteArrayInputStream);

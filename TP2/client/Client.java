@@ -5,7 +5,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import carrier.Carrier;
+import carrier.TCPCarrier;
 import packets.TCPPacket;
 import packets.TCPPacket.Protocol;
 
@@ -16,7 +16,7 @@ public class Client{
 
     private Socket socket;
     private ClientUI clientUI;
-    private ClienteControler clienteControler; 
+    private ClienteController clienteController; 
     private DataInputStream inputstream;
     private DataOutputStream outputstream;
     
@@ -25,7 +25,7 @@ public class Client{
         Client.FOLDER = folder;
         this.socket = socket;
         this.clientUI = new ClientUI();
-        this.clienteControler = new ClienteControler();
+        this.clienteController = new ClienteController();
         this.inputstream = new DataInputStream(socket.getInputStream());
         this.outputstream = new DataOutputStream(socket.getOutputStream());
     }
@@ -33,7 +33,7 @@ public class Client{
 
     public void run() throws IOException{
 
-        Carrier carrier = Carrier.getInstance();
+        TCPCarrier carrier = TCPCarrier.getInstance();
         InetSocketAddress source = (InetSocketAddress) socket.getLocalSocketAddress();
         InetSocketAddress dest = (InetSocketAddress) socket.getRemoteSocketAddress();
         TCPPacket tcpPacket = this.clientUI.getHELLOTCPPacket(source,dest);
@@ -48,7 +48,7 @@ public class Client{
 
                 System.out.println(tcpPacket.toString());
 
-                this.clienteControler.handler(tcpPacket);
+                this.clienteController.handler(tcpPacket);
 
                 if (tcpPacket.getProtocol() == Protocol.GETAK){
                     tcpPacket = this.clientUI.getHELLOTCPPacket(source,dest);

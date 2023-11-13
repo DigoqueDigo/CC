@@ -4,23 +4,23 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
-import carrier.Carrier;
+import carrier.TCPCarrier;
 import packets.TCPPacket;
 
 
 public class TrackerWorker implements Runnable{
 
     private Socket socket;
-    private Carrier carrier;
+    private TCPCarrier carrier;
     private DataInputStream inputstream;
     private DataOutputStream outputstream;
-    private TrackerWorkerControler trackerworkercontroler;
+    private TrackerWorkerController trackerworkercontroller;
 
 
-    public TrackerWorker(Socket socket, TrackerWorkerControler trackerworkercontroler) throws IOException{
+    public TrackerWorker(Socket socket, TrackerWorkerController trackerworkercontroller) throws IOException{
         this.socket = socket;
-        this.carrier = Carrier.getInstance();
-        this.trackerworkercontroler = trackerworkercontroler;
+        this.carrier = TCPCarrier.getInstance();
+        this.trackerworkercontroller = trackerworkercontroller;
         this.inputstream = new DataInputStream(socket.getInputStream());
         this.outputstream = new DataOutputStream(socket.getOutputStream());
     }
@@ -36,7 +36,7 @@ public class TrackerWorker implements Runnable{
 
                 System.out.println(tcpPacket.toString());
 
-                tcpPacket = this.trackerworkercontroler.execute(tcpPacket);
+                tcpPacket = this.trackerworkercontroller.execute(tcpPacket);
 
                 System.out.print(tcpPacket.toString());
 

@@ -6,20 +6,20 @@ import java.io.IOException;
 import packets.TCPPacket;
 
 
-public class Carrier{
+public class TCPCarrier{
 
-    private static Carrier singleton = null;
+    private static TCPCarrier singleton = null;
 
-    private Carrier() {};
+    private TCPCarrier() {};
 
-    public static Carrier getInstance(){
-        if (Carrier.singleton == null) Carrier.singleton = new Carrier();
-        return Carrier.singleton;
+    public static TCPCarrier getInstance(){
+        if (TCPCarrier.singleton == null) TCPCarrier.singleton = new TCPCarrier();
+        return TCPCarrier.singleton;
     }
 
 
     public void sendTCPPacket(DataOutputStream outputstream, TCPPacket tcpPacket) throws IOException{
-        byte[] message = tcpPacket.serializeTCPPacket();
+        byte[] message = tcpPacket.serialize();
         outputstream.writeInt(message.length);
         outputstream.write(message);
         outputstream.flush();
@@ -36,6 +36,6 @@ public class Carrier{
             throw new Exception("TCP packet reading incomplete");
         }
 
-        return TCPPacket.deserializeTCPacket(message);
+        return TCPPacket.deserialize(message);
     }    
 }

@@ -59,7 +59,7 @@ public class UDPCarrier{
                     udpPacket_send = udpPackets.get(index);
                     packets_send.setAddress(InetAddress.getByName(udpPacket_send.getIPdest()));
                     packets_send.setPort(udpPacket_send.getPortdest());
-                    packets_send.setData(udpPacket_send.serializeUDPPacket());
+                    packets_send.setData(udpPacket_send.serialize());
                     socket.send(packets_send);
                 }
 
@@ -68,7 +68,7 @@ public class UDPCarrier{
                     try{
                         
                         socket.receive(packets_receive);
-                        udpPacket_receive = UDPPacket.deserializeUDPPacket(packets_receive.getData());
+                        udpPacket_receive = UDPPacket.deserialize(packets_receive.getData());
 
                         if (udpPacket_receive.getProtocol() == UDPProtocol.ACK){
                             udpPackets.remove(udpPacket_receive);
@@ -99,7 +99,7 @@ public class UDPCarrier{
             try{
 
                 socket.receive(datagram_receive);
-                udpPacket_receive = UDPPacket.deserializeUDPPacket(datagram_receive.getData());
+                udpPacket_receive = UDPPacket.deserialize(datagram_receive.getData());
 
                 if (udpPacket_receive.checkSHA1()){
                     
@@ -120,7 +120,7 @@ public class UDPCarrier{
                     udpPacket_send.setData(new byte[0]);
                 
                     datagram_send.setSocketAddress(datagram_receive.getSocketAddress());
-                    datagram_send.setData(udpPacket_send.serializeUDPPacket());
+                    datagram_send.setData(udpPacket_send.serialize());
                     socket.send(datagram_send);
                 }
             }

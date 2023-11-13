@@ -7,11 +7,11 @@ import client.schedule.Schedule;
 import packets.TCPPacket;
 
 
-public class ClienteControler{
+public class ClienteController{
 
     private Schedule schedule;
 
-    public ClienteControler(){
+    public ClienteController(){
         this.schedule = new Schedule();
     }
 
