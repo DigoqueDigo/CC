@@ -46,7 +46,7 @@ public class UDPPacket implements Binary{
         this.Portsource = Portsource;
         this.Portdest = Portdest;
         this.SeqNum = SeqNum;
-        this.piece = (piece != null) ? piece.clone() : null;
+        this.piece = piece;
         this.data = Arrays.copyOf(data,data.length);
     }
 
@@ -117,7 +117,7 @@ public class UDPPacket implements Binary{
 
 
     public void setPiece(PieceInfo piece){
-        this.piece = piece.clone();
+        this.piece = piece;
     }
 
 

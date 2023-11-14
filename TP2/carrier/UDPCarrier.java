@@ -105,7 +105,7 @@ public class UDPCarrier{
                     
                     if (!result.contains(udpPacket_receive)){
                         udpPacket_receive.setIPsource(datagram_receive.getSocketAddress());
-                        result.add(udpPacket_receive.clone());
+                        result.add(udpPacket_receive);
                     }
 
                     udpPacket_send = new UDPPacket(

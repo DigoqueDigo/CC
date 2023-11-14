@@ -37,11 +37,6 @@ public class PieceInfo implements Binary{
     }
 
 
-    public PieceInfo clone(){
-        return new PieceInfo(this.hash,this.position,this.file);
-    }
-
-
     public void setPosition(int position){
         this.position = position;
     }
