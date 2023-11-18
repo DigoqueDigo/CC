@@ -37,6 +37,8 @@ public class ClienteController{
                 }
 
                 for (Thread thread : threads) {thread.join();}
+
+                this.schedule.clearSchedule();
                 break;
 
             case EXITACK:

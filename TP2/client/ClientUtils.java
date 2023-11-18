@@ -117,8 +117,10 @@ public class ClientUtils{
 
                 Stream.of(tokens)
                     .skip(1)
+                    .distinct()
                     .map(x -> new FileInfo(x,0))
                     .forEach(x -> toTracker.put(x, new ArrayList<PieceInfo>(0)));
+                
                 break;
 
             default:

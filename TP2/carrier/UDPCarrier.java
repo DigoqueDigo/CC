@@ -15,7 +15,7 @@ import packets.UDPPacket.UDPProtocol;
 public class UDPCarrier{
 
     private static final int SENDER_TIMEOUT = 25;
-    private static final int RECEIVER_TIMEOUT = 100;
+    private static final int RECEIVER_TIMEOUT = 500;
     private static final int WINDOW_SIZE = 10;
     private static final int SEQNUMBOUND = 1024;
     private static UDPCarrier singleton = null;

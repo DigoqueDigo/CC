@@ -38,4 +38,8 @@ public class Schedule{
     public DownloadSchedule getValue(String key){
         return this.shcedule.get(key);
     }
+
+    public void clearSchedule(){
+        this.shcedule.clear();
+    }
 }
