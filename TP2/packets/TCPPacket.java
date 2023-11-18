@@ -109,8 +109,8 @@ public class TCPPacket implements Binary{
 
         dataOutputStream.writeInt(data_message.length);
         dataOutputStream.write(data_message);
-
         dataOutputStream.flush();
+
         return byteArrayOutputStream.toByteArray();
     }
 

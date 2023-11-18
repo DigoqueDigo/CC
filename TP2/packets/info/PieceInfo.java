@@ -94,8 +94,8 @@ public class PieceInfo implements Binary{
         dataOutputStream.writeUTF(this.hash);
         dataOutputStream.writeInt(this.position);
         dataOutputStream.writeUTF(this.file);
-
         dataOutputStream.flush();
+
         return byteArrayOutputStream.toByteArray();
     }
 

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.zip.CRC32C;
 import packets.UDPPacket;
 import packets.UDPPacket.UDPProtocol;
 
@@ -34,6 +35,13 @@ public class UDPCarrier{
         for (UDPPacket packet : packets){
             packet.setSeqNum(p++);
         }
+    }
+
+
+    private boolean checkUDPPacket(DatagramPacket packet, UDPPacket udpPacket){
+        CRC32C checksum = new CRC32C();
+        checksum.update(packet.getData(),0,packet.getLength()-UDPPacket.CheckSumSize);
+        return checksum.getValue() == udpPacket.getChecksum();
     }
 
 
@@ -101,7 +109,7 @@ public class UDPCarrier{
                 socket.receive(datagram_receive);
                 udpPacket_receive = UDPPacket.deserialize(datagram_receive.getData());
 
-                if (udpPacket_receive.checkSHA1()){
+                if (checkUDPPacket(datagram_receive,udpPacket_receive) && udpPacket_receive.checkSHA1()){
                     
                     if (!result.contains(udpPacket_receive)){
                         udpPacket_receive.setIPsource(datagram_receive.getSocketAddress());

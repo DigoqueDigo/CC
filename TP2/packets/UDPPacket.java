@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Arrays;
+import java.util.zip.CRC32C;
 import carrier.Reader;
 import packets.info.PieceInfo;
 
@@ -14,6 +15,7 @@ import packets.info.PieceInfo;
 public class UDPPacket implements Binary{
 
     public static final int MaxSize = 4096;
+    public static final int CheckSumSize = 8;
 
     public enum UDPProtocol {HELLO, GET, DATA, ACK};
 
@@ -25,6 +27,7 @@ public class UDPPacket implements Binary{
     private int SeqNum;
     private PieceInfo piece;
     private byte[] data;
+    private long checksum;
 
 
     public UDPPacket(UDPProtocol protocol, String IPsource, String IPdest, int Portsource, int Portdest){
@@ -34,12 +37,13 @@ public class UDPPacket implements Binary{
         this.Portsource = Portsource;
         this.Portdest = Portdest;
         this.SeqNum = 0;
+        this.checksum = 0;
         this.piece = null;
-        this.data = new byte[0];        
+        this.data = new byte[0];
     }
 
 
-    private UDPPacket(UDPProtocol protocol, String IPsource, String IPdest, int Portsource, int Portdest, int SeqNum, PieceInfo piece, byte[] data){
+    private UDPPacket(UDPProtocol protocol, String IPsource, String IPdest, int Portsource, int Portdest, int SeqNum, PieceInfo piece, byte[] data, long checksum){
         this.protocol = protocol;
         this.IPsource = IPsource;
         this.IPdest = IPdest;
@@ -48,6 +52,7 @@ public class UDPPacket implements Binary{
         this.SeqNum = SeqNum;
         this.piece = piece;
         this.data = Arrays.copyOf(data,data.length);
+        this.checksum = checksum;
     }
 
 
@@ -60,7 +65,8 @@ public class UDPPacket implements Binary{
             this.Portdest,
             this.SeqNum,
             this.piece,
-            this.data
+            this.data,
+            this.checksum
         );
     }
 
@@ -102,6 +108,11 @@ public class UDPPacket implements Binary{
 
     public byte[] getData(){
         return Arrays.copyOf(this.data,this.data.length);
+    }
+
+
+    public long getChecksum(){
+        return this.checksum;
     }
 
 
@@ -170,6 +181,7 @@ public class UDPPacket implements Binary{
     public byte[] serialize() throws IOException{
 
         byte[] data_piece;
+        CRC32C crc32c = new CRC32C();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         DataOutputStream dataoutputStream = new DataOutputStream(byteArrayOutputStream);
         
@@ -189,6 +201,10 @@ public class UDPPacket implements Binary{
 
         dataoutputStream.writeInt(this.data.length);
         dataoutputStream.write(this.data);
+
+        crc32c.update(byteArrayOutputStream.toByteArray());
+        dataoutputStream.writeLong(crc32c.getValue());
+        dataoutputStream.flush();
 
         return byteArrayOutputStream.toByteArray();
     }
@@ -216,6 +232,7 @@ public class UDPPacket implements Binary{
         byte[] data_message = new byte[dataInputStream.readInt()];
         Reader.read(dataInputStream,data_message,data_message.length);
 
-        return new UDPPacket(protocol,IPsource,IPdest,Portsource,Portdest,SeqNum,piece,data_message);
+        long checksum = dataInputStream.readLong();
+        return new UDPPacket(protocol,IPsource,IPdest,Portsource,Portdest,SeqNum,piece,data_message,checksum);
     }
 }

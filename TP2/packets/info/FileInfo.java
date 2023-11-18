@@ -52,8 +52,8 @@ public class FileInfo implements Binary{
 
         dataOutputStream.writeUTF(this.name);
         dataOutputStream.writeLong(this.size);
-
         dataOutputStream.flush();
+
         return byteArrayOutputStream.toByteArray();
     }
 
