@@ -7,7 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import carrier.TCPCarrier;
 import packets.TCPPacket;
-import packets.TCPPacket.Protocol;
+import packets.TCPPacket.TCPProtocol;
 
 
 public class Client{
@@ -50,7 +50,7 @@ public class Client{
 
                 this.clienteController.handler(tcpPacket);
 
-                if (tcpPacket.getProtocol() == Protocol.GETAK){
+                if (tcpPacket.getProtocol() == TCPProtocol.GETAK){
                     tcpPacket = this.clientUI.getHELLOTCPPacket(source,dest);
                 }
 

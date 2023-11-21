@@ -49,8 +49,8 @@ public class UDPCarrier{
 
         UDPPacket udpPacket_send;
         UDPPacket udpPacket_receive;
-        DatagramPacket packets_send = new DatagramPacket(new byte[UDPPacket.MaxSize],UDPPacket.MaxSize);
-        DatagramPacket packets_receive = new DatagramPacket(new byte[UDPPacket.MaxSize],UDPPacket.MaxSize);
+        DatagramPacket datagram_send = new DatagramPacket(new byte[UDPPacket.MaxSize],UDPPacket.MaxSize);
+        DatagramPacket datagram_receive = new DatagramPacket(new byte[UDPPacket.MaxSize],UDPPacket.MaxSize);
         List<UDPPacket> udpPackets = list.stream().map(x -> x.clone()).collect(Collectors.toList());
            
         setSeqNums(udpPackets);
@@ -65,18 +65,18 @@ public class UDPCarrier{
                 if (index < udpPackets.size()){
 
                     udpPacket_send = udpPackets.get(index);
-                    packets_send.setAddress(InetAddress.getByName(udpPacket_send.getIPdest()));
-                    packets_send.setPort(udpPacket_send.getPortdest());
-                    packets_send.setData(udpPacket_send.serialize());
-                    socket.send(packets_send);
+                    datagram_send.setAddress(InetAddress.getByName(udpPacket_send.getIPdest()));
+                    datagram_send.setPort(udpPacket_send.getPortdest());
+                    datagram_send.setData(udpPacket_send.serialize());
+                    socket.send(datagram_send);
                 }
 
                 if (index >= window_size){
 
                     try{
                         
-                        socket.receive(packets_receive);
-                        udpPacket_receive = UDPPacket.deserialize(packets_receive.getData());
+                        socket.receive(datagram_receive);
+                        udpPacket_receive = UDPPacket.deserialize(datagram_receive.getData());
 
                         if (udpPacket_receive.getProtocol() == UDPProtocol.ACK){
                             udpPackets.remove(udpPacket_receive);
@@ -109,7 +109,7 @@ public class UDPCarrier{
                 socket.receive(datagram_receive);
                 udpPacket_receive = UDPPacket.deserialize(datagram_receive.getData());
 
-                if (checkUDPPacket(datagram_receive,udpPacket_receive) && udpPacket_receive.checkSHA1()){
+                if (checkUDPPacket(datagram_receive,udpPacket_receive) && udpPacket_receive.getProtocol() != UDPProtocol.ACK){
                     
                     if (!result.contains(udpPacket_receive)){
                         udpPacket_receive.setIPsource(datagram_receive.getSocketAddress());

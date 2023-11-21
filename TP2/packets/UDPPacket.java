@@ -137,18 +137,6 @@ public class UDPPacket implements Binary{
     }
 
 
-    public boolean checkSHA1(){
-        
-        try{
-            return (this.piece != null && this.protocol == UDPProtocol.DATA) ?
-                this.piece.getHash().equals(PieceInfo.SHA1(this.data)) :
-                true;
-        }
-
-        catch (Exception e) {return false;}
-    }
-
-
     public String toString(){
 
         StringBuilder buffer = new StringBuilder();

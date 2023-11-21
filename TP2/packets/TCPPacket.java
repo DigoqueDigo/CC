@@ -15,9 +15,9 @@ import packets.messages.Message.TYPE;
 
 public class TCPPacket implements Binary{
 
-    public enum Protocol {HELLO, GET, EXIT, HELLOACK, GETAK, EXITACK, ACK};
+    public enum TCPProtocol {HELLO, GET, EXIT, HELLOACK, GETAK, EXITACK, ACK};
 
-    private Protocol protocol;
+    private TCPProtocol protocol;
     private String IPsource;
     private String IPdest;
     private int Portsource;
@@ -26,7 +26,7 @@ public class TCPPacket implements Binary{
     private Message<PieceInfo,String> Toclient;
 
 
-    public TCPPacket(Protocol protocol, String IPsource, String IPdest, int Portsource, int Portdest, TYPE type){
+    public TCPPacket(TCPProtocol protocol, String IPsource, String IPdest, int Portsource, int Portdest, TYPE type){
         this.protocol = protocol;
         this.IPsource = IPsource;
         this.IPdest = IPdest;
@@ -40,7 +40,7 @@ public class TCPPacket implements Binary{
     }
 
 
-    public Protocol getProtocol(){
+    public TCPProtocol getProtocol(){
         return this.protocol;
     }
 
@@ -122,7 +122,7 @@ public class TCPPacket implements Binary{
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
         DataInputStream dataInputStream = new DataInputStream(byteArrayInputStream);
 
-        Protocol protocol = Protocol.valueOf(dataInputStream.readUTF());
+        TCPProtocol protocol = TCPProtocol.valueOf(dataInputStream.readUTF());
         String IPsource = dataInputStream.readUTF();
         String IPdest = dataInputStream.readUTF();
         int Portsource = dataInputStream.readInt();

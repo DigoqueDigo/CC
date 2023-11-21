@@ -1,6 +1,6 @@
 package tracker;
 import packets.TCPPacket;
-import packets.TCPPacket.Protocol;
+import packets.TCPPacket.TCPProtocol;
 import packets.messages.ToClient;
 import packets.messages.Message.TYPE;
 import tracker.containers.TrackerContainer;
@@ -37,28 +37,28 @@ public class TrackerWorkerController{
         System.out.println("BEFORE-------------------------------------------BEFORE");
 
         TCPPacket result;
-        Protocol protocol;
+        TCPProtocol protocol;
         ToClient toClient = new ToClient();
 
         switch (tcpPacket.getProtocol()){
 
             case HELLO:
-                protocol = Protocol.HELLOACK;
+                protocol = TCPProtocol.HELLOACK;
                 this.executeHELLO(tcpPacket);
                 break;
 
             case GET:
-                protocol = Protocol.GETAK;
+                protocol = TCPProtocol.GETAK;
                 toClient = this.executeGET(tcpPacket);
                 break;
 
             case EXIT:
-                protocol = Protocol.EXITACK;
+                protocol = TCPProtocol.EXITACK;
                 this.executeEXIT(tcpPacket);
                 break;
 
             default:
-                protocol = Protocol.ACK;
+                protocol = TCPProtocol.ACK;
                 break;
         }
 

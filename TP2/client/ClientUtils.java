@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import carrier.Reader;
 import packets.TCPPacket;
-import packets.TCPPacket.Protocol;
+import packets.TCPPacket.TCPProtocol;
 import packets.info.FileInfo;
 import packets.info.PieceInfo;
 import packets.messages.ToTracker;
@@ -85,7 +85,7 @@ public class ClientUtils{
         }
 
         tcpPacket = new TCPPacket(
-            Protocol.HELLO,
+            TCPProtocol.HELLO,
             source.getAddress().getHostAddress(),
             dest.getAddress().getHostAddress(),
             source.getPort(),
@@ -103,7 +103,7 @@ public class ClientUtils{
         ToTracker toTracker = new ToTracker();
         String[] tokens = line.split(" ");
 
-        switch (Protocol.valueOf(tokens[0])){
+        switch (TCPProtocol.valueOf(tokens[0])){
 
             case GET:
 
@@ -128,7 +128,7 @@ public class ClientUtils{
         }
 
         tcpPacket = new TCPPacket(
-            Protocol.valueOf(tokens[0]),
+            TCPProtocol.valueOf(tokens[0]),
             source.getAddress().getHostAddress(),
             dest.getAddress().getHostAddress(),
             source.getPort(),

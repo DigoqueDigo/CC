@@ -57,7 +57,7 @@ public class PieceInfo implements Binary{
     }
 
 
-    public static String SHA1(byte[] data) throws NoSuchAlgorithmException{
+    private static String SHA1(byte[] data) throws NoSuchAlgorithmException{
         MessageDigest message = MessageDigest.getInstance("SHA-1");
         return byteArrayToHex(message.digest(data));
     }
