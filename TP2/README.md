@@ -22,5 +22,5 @@ java tracker.Tracker
 ## Client
 
 ```bash
-java client.Main <folder> <Tracker_IP> 12345 <DNS_IP> 12345
+java client.Main <folder> <Tracker_IP> 12345 <DNS_IP> 22222
 ```
