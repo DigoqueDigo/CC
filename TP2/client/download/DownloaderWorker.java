@@ -66,13 +66,9 @@ public class DownloaderWorker implements Runnable{
                 Listener.DefaultPort
             );
 
-        //    System.out.println("DOWNLOADERWORKER -> LISTENER");
-
             packets_send.add(udpPacket);
             carrier.sendUDPPacket(socket,packets_send);
             packets_send.clear();
-            
-        //    System.out.println(udpPacket);
 
             while (packets_receive.size() == 0){
                 packets_receive = carrier.receiveUDPPacket(socket);
@@ -80,31 +76,15 @@ public class DownloaderWorker implements Runnable{
 
             udpPacket = packets_receive.get(0);
             packets_receive.clear();
-
-        //    System.out.println("DOWNLOADERWORKER <- LISTENERWORKER");
-        //    System.out.println(udpPacket);
-
-        //    System.out.println("------------------------------------------------");
-        //    System.out.println("DOWNLOADERWORKER -> LISTENERWORKER");
             
             packets_send = this.createUDPPacketsList(this.pieces,udpPacket.getIPsource(),udpPacket.getPortsource());
-        //    packets_send.forEach(x -> System.out.println(x));
 
-        //    System.out.println("------------------------------------------------");
-            
             carrier.sendUDPPacket(socket,packets_send);
             packets_send.clear();
 
             while (packets_receive.size() == 0){
                 packets_receive = carrier.receiveUDPPacket(socket);
             }
-
-        //    System.out.println("------------------------------------------------");
-        //    System.out.println("DOWNLOADERWORKER <- LISTENERWORKER");
-
-        //    packets_receive.forEach(x -> System.out.println(x));
-
-        //    System.out.println("------------------------------------------------");
 
             packets_receive.forEach(x -> this.buffer.put(x.getPiece().getPosition(),x.getData()));
             packets_receive.clear();

@@ -26,9 +26,6 @@ public class Listener implements Runnable{
 
                 for (UDPPacket packet : carrier.receiveUDPPacket(socket)){
 
-        //            System.out.println("LISTENER <- DOWNLOADWORKER");
-        //            System.out.println(packet.toString());
-
                     if (packet.getProtocol() == UDPProtocol.HELLO){
 
                         new Thread(

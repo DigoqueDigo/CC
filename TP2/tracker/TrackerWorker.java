@@ -33,13 +33,7 @@ public class TrackerWorker implements Runnable{
         try{
 
             while ((tcpPacket = carrier.receiveTCPPacket(inputstream)) != null){
-
-                System.out.println(tcpPacket.toString());
-
                 tcpPacket = this.trackerworkercontroller.execute(tcpPacket);
-
-                System.out.print(tcpPacket.toString());
-
                 carrier.sendTCPPacket(outputstream,tcpPacket);
             }
         }

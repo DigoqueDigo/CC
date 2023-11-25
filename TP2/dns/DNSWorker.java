@@ -47,10 +47,6 @@ public class DNSWorker implements Runnable{
 
             while ((dnsPacket = dnsCarrier.receiveDNSPacket(inputStream)) != null){
 
-                System.out.println("------------------------");
-                System.out.println(this.container);
-                System.out.println("------------------------");
-
                 switch (dnsPacket.getProtocol()){
 
                     case HELLO:

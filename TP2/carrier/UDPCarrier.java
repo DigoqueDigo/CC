@@ -23,7 +23,7 @@ public class UDPCarrier{
 
     private UDPCarrier(){}
 
-    
+
     public static UDPCarrier getInstance(){
         if (UDPCarrier.singleton == null) UDPCarrier.singleton = new UDPCarrier();
         return UDPCarrier.singleton;
@@ -52,7 +52,7 @@ public class UDPCarrier{
         DatagramPacket datagram_send = new DatagramPacket(new byte[UDPPacket.MaxSize],UDPPacket.MaxSize);
         DatagramPacket datagram_receive = new DatagramPacket(new byte[UDPPacket.MaxSize],UDPPacket.MaxSize);
         List<UDPPacket> udpPackets = list.stream().map(x -> x.clone()).collect(Collectors.toList());
-           
+
         setSeqNums(udpPackets);
         socket.setSoTimeout(UDPCarrier.SENDER_TIMEOUT);
 
@@ -61,7 +61,7 @@ public class UDPCarrier{
             int window_size = Math.min(udpPackets.size(),UDPCarrier.WINDOW_SIZE);
 
             for (int index = 0; index < (udpPackets.size() + window_size); index++){
-                
+
                 if (index < udpPackets.size()){
 
                     udpPacket_send = udpPackets.get(index);
@@ -74,7 +74,7 @@ public class UDPCarrier{
                 if (index >= window_size){
 
                     try{
-                        
+
                         socket.receive(datagram_receive);
                         udpPacket_receive = UDPPacket.deserialize(datagram_receive.getData());
 
@@ -110,7 +110,7 @@ public class UDPCarrier{
                 udpPacket_receive = UDPPacket.deserialize(datagram_receive.getData());
 
                 if (checkUDPPacket(datagram_receive,udpPacket_receive) && udpPacket_receive.getProtocol() != UDPProtocol.ACK){
-                    
+
                     if (!result.contains(udpPacket_receive)){
                         udpPacket_receive.setIPsource(datagram_receive.getSocketAddress());
                         result.add(udpPacket_receive);
@@ -126,7 +126,7 @@ public class UDPCarrier{
 
                     udpPacket_send.setSeqNum(udpPacket_receive.getSeqNum());
                     udpPacket_send.setData(new byte[0]);
-                
+
                     datagram_send.setSocketAddress(datagram_receive.getSocketAddress());
                     datagram_send.setData(udpPacket_send.serialize());
                     socket.send(datagram_send);

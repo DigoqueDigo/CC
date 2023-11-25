@@ -12,7 +12,7 @@ public class TCPCarrier{
 
     private TCPCarrier() {};
 
-    
+
     public static TCPCarrier getInstance(){
         if (TCPCarrier.singleton == null) TCPCarrier.singleton = new TCPCarrier();
         return TCPCarrier.singleton;
@@ -28,10 +28,10 @@ public class TCPCarrier{
 
 
     public TCPPacket receiveTCPPacket(DataInputStream inputstream) throws Exception{
-        
+
         int packet_size = inputstream.readInt();
         byte[] message = new byte[packet_size];
-        
+
         if (message.length <= 0) throw new EOFException();
 
         if (Reader.read(inputstream,message,packet_size) != packet_size){
@@ -39,5 +39,5 @@ public class TCPCarrier{
         }
 
         return TCPPacket.deserialize(message);
-    }    
+    }
 }

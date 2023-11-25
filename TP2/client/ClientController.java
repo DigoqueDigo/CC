@@ -7,11 +7,11 @@ import client.schedule.Schedule;
 import packets.TCPPacket;
 
 
-public class ClienteController{
+public class ClientController{
 
     private Schedule schedule;
 
-    public ClienteController(){
+    public ClientController(){
         this.schedule = new Schedule();
     }
 
@@ -26,7 +26,7 @@ public class ClienteController{
                 List<Thread> threads = new ArrayList<Thread>();
 
                 for (String filename : this.schedule.getKeys()){
-                    
+
                     threads.add(new Thread(
                         new Downloader(
                             filename,
@@ -43,7 +43,7 @@ public class ClienteController{
 
             case EXITACK:
                 throw new EOFException();
-        
+
             default:
                 break;
         }

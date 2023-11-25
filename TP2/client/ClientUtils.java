@@ -81,8 +81,7 @@ public class ClientUtils{
 
             try {toTracker.put(file,getPieces(file.getName()));}
 
-            catch (Exception e){
-                System.out.println("ERROR while defining pieces");}
+            catch (Exception e) {System.out.println("ERROR while defining pieces");}
         }
 
         tcpPacket = new TCPPacket(

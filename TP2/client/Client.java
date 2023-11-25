@@ -20,7 +20,7 @@ public class Client{
 
     private Socket socket;
     private ClientUI clientUI;
-    private ClienteController clienteController; 
+    private ClientController clientController; 
     private DataInputStream inputstream;
     private DataOutputStream outputstream;
     
@@ -31,7 +31,7 @@ public class Client{
         Client.DNSPort = dnsPort;
         this.socket = socket;
         this.clientUI = new ClientUI();
-        this.clienteController = new ClienteController();
+        this.clientController = new ClientController();
         this.inputstream = new DataInputStream(socket.getInputStream());
         this.outputstream = new DataOutputStream(socket.getOutputStream());
     }
@@ -48,8 +48,6 @@ public class Client{
         DNSPacket dnsPacket = this.clientUI.getHELLODNSPacket(source);
         TCPPacket tcpPacket = this.clientUI.getHELLOTCPPacket(source,dest);
 
-        System.out.println(tcpPacket.toString());
-
         carrier.sendTCPPacket(outputstream,tcpPacket);
         resolver.send(dnsPacket,Client.DNSAddress,Client.DNSPort);
 
@@ -57,9 +55,7 @@ public class Client{
 
             while ((tcpPacket = carrier.receiveTCPPacket(inputstream)) != null){
 
-                System.out.println(tcpPacket.toString());
-
-                this.clienteController.handler(tcpPacket);
+                this.clientController.handler(tcpPacket);
 
                 if (tcpPacket.getProtocol() == TCPProtocol.GETAK){
                     tcpPacket = this.clientUI.getHELLOTCPPacket(source,dest);
@@ -67,7 +63,6 @@ public class Client{
 
                 else tcpPacket = this.clientUI.getTCPPacket(source,dest);
 
-                System.out.println(tcpPacket.toString());
                 carrier.sendTCPPacket(outputstream,tcpPacket);
             }
         }
