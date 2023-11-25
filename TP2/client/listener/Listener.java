@@ -37,10 +37,7 @@ public class Listener implements Runnable{
                 }
             }
 
-            catch (Exception e){
-                hasNext = false;
-                e.printStackTrace();
-            }
+            catch (Exception e) {hasNext = false;}
         }
     }
 }

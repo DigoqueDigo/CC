@@ -67,9 +67,19 @@ public class DNSContainer{
 
 
     public String toString(){
-        return this.container.entrySet()
+
+        StringBuilder buffer = new StringBuilder();
+
+        buffer.append("--------------------------------------------------\n");
+        
+        if (this.container.size() > 0){
+            buffer.append(this.container.entrySet()
                 .stream()
                 .map(x -> "Hostname: " + x.getKey() + "\tAddress: " + x.getValue())
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining("\n","","\n")));
+        }
+
+        buffer.append("--------------------------------------------------\n");
+        return buffer.toString();
     }
 }

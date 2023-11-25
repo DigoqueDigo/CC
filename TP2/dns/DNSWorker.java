@@ -65,9 +65,7 @@ public class DNSWorker implements Runnable{
                         break;
                 }
 
-                System.out.println("------------------------");
                 System.out.println(this.container);
-                System.out.println("------------------------");
             }
         }
 

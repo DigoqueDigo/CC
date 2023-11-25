@@ -60,9 +60,7 @@ public class TrackerWorkerController{
                 break;
         }
 
-        System.out.println("-------------------------------------------");
         System.out.println(this.trackercontainer.toString());
-        System.out.println("-------------------------------------------");
 
         result = new TCPPacket(
             protocol,

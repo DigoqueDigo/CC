@@ -8,6 +8,7 @@ import packets.messages.ToClient;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+import java.util.stream.Collectors;
 
 
 public class TrackerContainer{
@@ -84,14 +85,16 @@ public class TrackerContainer{
 
     public String toString(){
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
-        this.container.entrySet().forEach(x -> {
-            buffer.append(x.getKey().toString() + "\n");
-            buffer.append(x.getValue() + "\n");
-        });
+        buffer.append("---------------------------------------------------------------------------------------------------\n");
 
+        buffer.append(this.container.values()
+            .stream()
+            .map(x -> x.toString())
+            .collect(Collectors.joining("\n","","\n")));
 
+        buffer.append("---------------------------------------------------------------------------------------------------\n");
         return buffer.toString();
     }
 }

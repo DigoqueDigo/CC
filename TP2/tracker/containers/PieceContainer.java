@@ -57,13 +57,9 @@ public class PieceContainer{
 
     public String toString(){
 
-        StringBuffer buffer = new StringBuffer();
-
-        this.container.entrySet().forEach(x -> {
-                buffer.append(x.getKey().toString() + "\n");
-                x.getValue().forEach(y -> buffer.append(y + "\n"));
-        });
-
-        return buffer.toString();
+        return this.container.entrySet()
+            .stream()
+            .map(x -> x.getKey().toString() + x.getValue().stream().map(y -> y.toString()).collect(Collectors.joining("\n","\n","")))
+            .collect(Collectors.joining("\n"));
     }
 }
