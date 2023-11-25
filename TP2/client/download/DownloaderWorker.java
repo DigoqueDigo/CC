@@ -28,11 +28,11 @@ public class DownloaderWorker implements Runnable{
 
 
     private List<UDPPacket> createUDPPacketsList(List<PieceInfo> pieces, String IPdest, int Portdest){
-        
+
         List<UDPPacket> packets = new ArrayList<UDPPacket>();
-        
+
         pieces.forEach(x -> {
-            
+
             UDPPacket udpPacket = new UDPPacket(
                 UDPProtocol.GET,
                 this.socket.getLocalAddress().getHostAddress(),
@@ -57,7 +57,7 @@ public class DownloaderWorker implements Runnable{
             UDPCarrier carrier = UDPCarrier.getInstance();
             List<UDPPacket> packets_send = new ArrayList<UDPPacket>();
             List<UDPPacket> packets_receive = new ArrayList<UDPPacket>();
-            
+
             udpPacket = new UDPPacket(
                 UDPProtocol.HELLO,
                 this.socket.getLocalAddress().getHostAddress(),
@@ -76,7 +76,7 @@ public class DownloaderWorker implements Runnable{
 
             udpPacket = packets_receive.get(0);
             packets_receive.clear();
-            
+
             packets_send = this.createUDPPacketsList(this.pieces,udpPacket.getIPsource(),udpPacket.getPortsource());
 
             carrier.sendUDPPacket(socket,packets_send);

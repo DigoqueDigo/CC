@@ -100,7 +100,7 @@ public class UDPPacket implements Binary{
         return this.SeqNum;
     }
 
-    
+
     public PieceInfo getPiece(){
         return this.piece;
     }
@@ -172,7 +172,7 @@ public class UDPPacket implements Binary{
         CRC32C crc32c = new CRC32C();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         DataOutputStream dataoutputStream = new DataOutputStream(byteArrayOutputStream);
-        
+
         dataoutputStream.writeUTF(this.protocol.name());
         dataoutputStream.writeUTF(this.IPsource);
         dataoutputStream.writeUTF(this.IPdest);
@@ -180,7 +180,7 @@ public class UDPPacket implements Binary{
         dataoutputStream.writeInt(this.Portdest);
         dataoutputStream.writeInt(this.SeqNum);
         dataoutputStream.writeBoolean(this.piece != null);
-        
+
         if (this.piece != null){
             data_piece = this.piece.serialize();
             dataoutputStream.writeInt(data_piece.length);

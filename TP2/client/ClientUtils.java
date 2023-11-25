@@ -121,7 +121,7 @@ public class ClientUtils{
                     .distinct()
                     .map(x -> new FileInfo(x,0))
                     .forEach(x -> toTracker.put(x, new ArrayList<PieceInfo>(0)));
-                
+
                 break;
 
             default:

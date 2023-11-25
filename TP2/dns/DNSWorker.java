@@ -8,7 +8,7 @@ import packets.DNSPacket;
 
 
 public class DNSWorker implements Runnable{
-    
+
     private Socket socket;
     private DNSContainer container;
     private DataInputStream inputStream;
@@ -56,7 +56,7 @@ public class DNSWorker implements Runnable{
                     case EXIT:
                         this.handleRemove(dnsPacket);
                         break;
-                    
+
                     case REQUEST:
                         dnsCarrier.sendDNSPacket(outputStream,this.handleRequest(dnsPacket));
                         break;

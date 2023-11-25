@@ -44,7 +44,7 @@ public class PieceContainer{
     public void removeClient(String IPaddress){
 
         Iterator<Map.Entry<PieceInfo,List<String>>> iterator = this.container.entrySet().iterator();
-        
+
         while (iterator.hasNext()){
             Map.Entry<PieceInfo,List<String>> entry = iterator.next();
             List<String> value = entry.getValue();

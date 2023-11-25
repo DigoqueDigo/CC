@@ -20,10 +20,10 @@ public class Client{
 
     private Socket socket;
     private ClientUI clientUI;
-    private ClientController clientController; 
+    private ClientController clientController;
     private DataInputStream inputstream;
     private DataOutputStream outputstream;
-    
+
 
     public Client(Socket socket, String folder, String dnsAddress, int dnsPort) throws IOException{
         Client.FOLDER = folder;
@@ -44,7 +44,7 @@ public class Client{
 
         InetSocketAddress source = (InetSocketAddress) socket.getLocalSocketAddress();
         InetSocketAddress dest = (InetSocketAddress) socket.getRemoteSocketAddress();
-        
+
         DNSPacket dnsPacket = this.clientUI.getHELLODNSPacket(source);
         TCPPacket tcpPacket = this.clientUI.getHELLOTCPPacket(source,dest);
 

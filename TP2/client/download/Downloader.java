@@ -22,24 +22,24 @@ public class Downloader implements Runnable{
     private DownloadSchedule schedule;
     private ConcurrentMap<Integer,byte[]> buffer;
 
-    
+
     public Downloader(String filename, DownloadSchedule schedule) throws IOException{
         this.filename = filename;
         this.schedule = schedule;
         this.buffer = new ConcurrentHashMap<Integer,byte[]>();
     }
 
-    
+
     private void writeToFile() throws IOException{
 
         FileOutputStream outputStream = new FileOutputStream(Client.FOLDER + this.filename);
         Comparator<Map.Entry<Integer,byte[]>> comparator = Comparator.comparingInt(x -> x.getKey());
-        
+
         buffer.entrySet().stream().sorted(comparator).map(x -> x.getValue()).forEach(x -> {
             try {outputStream.write(x);}
             catch (Exception e) {e.printStackTrace();}
         });
-        
+
         outputStream.close();
     }
 
@@ -49,12 +49,12 @@ public class Downloader implements Runnable{
         try{
 
             System.out.println(ClientUI.YELLOW_BOLD + "Download iniciado: " + this.filename + ClientUI.RESET);
-            
+
             long start = System.currentTimeMillis();
             List<Thread> threads = new ArrayList<Thread>();
 
             for (Map.Entry<String,List<PieceInfo>> element : this.schedule.entrySet()){
-                
+
                 DNSPacket dnsRequest = new DNSPacket(DNSProtocol.REQUEST,element.getKey());
                 DNSPacket dnsResponse = Resolver.getInstance().resolve(dnsRequest,Client.DNSAddress,Client.DNSPort);
 
@@ -64,7 +64,7 @@ public class Downloader implements Runnable{
                         element.getValue(),
                         buffer)
                 ));
-                
+
                 threads.get(threads.size()-1).start();
             }
 

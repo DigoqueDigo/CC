@@ -61,15 +61,15 @@ public class ListenerWorker implements Runnable{
             UDPCarrier carrier = UDPCarrier.getInstance();
             List<UDPPacket> packets_receive = new ArrayList<>();
             List<UDPPacket> packets_send = new ArrayList<>();
-            
+
             packet = new UDPPacket(
                 UDPProtocol.HELLO,
                 this.socket.getLocalAddress().getHostAddress(),
                 this.IPdest,
                 this.socket.getLocalPort(),
                 this.Portdest
-            ); 
-            
+            );
+
             packets_send.add(packet);
             carrier.sendUDPPacket(socket,packets_send);
             packets_send.clear();
@@ -80,7 +80,7 @@ public class ListenerWorker implements Runnable{
 
             fileData = getDataFromFile(
                 packets_receive.get(0).getPiece().getFile(),
-                packets_receive.stream().map(x -> x.getPiece()).collect(Collectors.toList())    
+                packets_receive.stream().map(x -> x.getPiece()).collect(Collectors.toList())
             );
 
             for (UDPPacket element : packets_receive){

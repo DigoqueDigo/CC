@@ -14,14 +14,14 @@ public class Listener implements Runnable{
         this.socket = socket;
     }
 
-    
+
     public void run(){
-        
+
         boolean hasNext = true;
         UDPCarrier carrier = UDPCarrier.getInstance();
-        
+
         while (hasNext){
-            
+
             try{
 
                 for (UDPPacket packet : carrier.receiveUDPPacket(socket)){
@@ -36,7 +36,7 @@ public class Listener implements Runnable{
                     }
                 }
             }
-    
+
             catch (Exception e){
                 hasNext = false;
                 e.printStackTrace();
