@@ -15,9 +15,9 @@ public class DownloadSchedule{
         this.schedule = new HashMap<String,List<PieceInfo>>();
     }
     
-    public void addPieceInfo(String IPaddress, PieceInfo pieceInfo){
-        this.schedule.putIfAbsent(IPaddress,new ArrayList<PieceInfo>());
-        this.schedule.get(IPaddress).add(pieceInfo);
+    public void addPieceInfo(String HostName, PieceInfo pieceInfo){
+        this.schedule.putIfAbsent(HostName,new ArrayList<PieceInfo>());
+        this.schedule.get(HostName).add(pieceInfo);
     }
 
     public Set<Map.Entry<String,List<PieceInfo>>> entrySet(){

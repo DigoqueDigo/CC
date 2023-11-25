@@ -1,4 +1,5 @@
 package tracker;
+import dns.DNSUtils;
 import packets.TCPPacket;
 import packets.TCPPacket.TCPProtocol;
 import packets.messages.ToClient;
@@ -67,12 +68,13 @@ public class TrackerWorkerController{
         System.out.println("AFTER-------------------------------------------AFTER");
 
         result = new TCPPacket(
-                        protocol,
-                        tcpPacket.getIPdest(),
-                        tcpPacket.getIPsource(),
-                        tcpPacket.getPortdest(),
-                        tcpPacket.getPortsource(),
-                        TYPE.TOCLIENT);
+            protocol,
+            DNSUtils.getInstance().getHostName(),
+            tcpPacket.getIPdest(),
+            tcpPacket.getIPsource(),
+            tcpPacket.getPortdest(),
+            tcpPacket.getPortsource(),
+            TYPE.TOCLIENT);
 
         result.setToClient(toClient);
         return result;

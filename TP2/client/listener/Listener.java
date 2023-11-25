@@ -42,7 +42,7 @@ public class Listener implements Runnable{
     
             catch (Exception e){
                 hasNext = false;
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }

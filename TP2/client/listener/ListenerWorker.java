@@ -127,7 +127,7 @@ public class ListenerWorker implements Runnable{
         }
 
         catch (Exception e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

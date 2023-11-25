@@ -22,11 +22,11 @@ public class Schedule{
 
         for (PieceInfo piece : tcpPacket.getToClient().getKeys()){
 
-            List<String> IPaddresses = tcpPacket.getToClient().getValue(piece);
+            List<String> HostNames = tcpPacket.getToClient().getValue(piece);
 
             this.shcedule.putIfAbsent(piece.getFile(),new DownloadSchedule());
             this.shcedule.get(piece.getFile()).addPieceInfo(
-                IPaddresses.get(random.nextInt(IPaddresses.size())),
+                HostNames.get(random.nextInt(HostNames.size())),
                 piece);
         }
     }

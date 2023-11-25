@@ -32,7 +32,7 @@ public class TrackerContainer{
             tcpPacket.getToTracker().getKeys().forEach(x -> {
                 this.container.putIfAbsent(x, new PieceContainer());
                 tcpPacket.getToTracker().getValue(x).forEach(y -> {
-                    this.container.get(x).put(y,tcpPacket.getIPsource());
+                    this.container.get(x).put(y,tcpPacket.getHostName());
                 });
             });
         }
@@ -69,7 +69,7 @@ public class TrackerContainer{
 
         try{
             this.writelock.lock();
-            this.container.values().stream().forEach(x -> x.removeClient(tcpPacket.getIPsource()));
+            this.container.values().stream().forEach(x -> x.removeClient(tcpPacket.getHostName()));
 
             Iterator <Map.Entry<FileInfo,PieceContainer>> iterator = this.container.entrySet().iterator();
 

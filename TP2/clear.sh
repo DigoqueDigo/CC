@@ -2,6 +2,8 @@ rm client/*.class
 rm client/schedule/*.class
 rm client/download/*.class
 rm client/listener/*.class
+rm client/resolver/*.class
+rm dns/*.class
 rm carrier/*.class
 rm tracker/*.class
 rm tracker/containers/*.class

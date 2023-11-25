@@ -18,9 +18,9 @@ public class PieceContainer{
     }
 
 
-    public void put(PieceInfo piece, String IPaddress){
+    public void put(PieceInfo piece, String HostName){
         this.container.putIfAbsent(piece,new ArrayList<String>());
-        this.container.get(piece).add(IPaddress);
+        this.container.get(piece).add(HostName);
     }
 
 

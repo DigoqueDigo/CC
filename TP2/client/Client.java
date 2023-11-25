@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import carrier.TCPCarrier;
+import client.resolver.Resolver;
+import packets.DNSPacket;
 import packets.TCPPacket;
 import packets.TCPPacket.TCPProtocol;
 
@@ -13,6 +15,8 @@ import packets.TCPPacket.TCPProtocol;
 public class Client{
 
     public static String FOLDER;
+    public static String DNSAddress;
+    public static int DNSPort;
 
     private Socket socket;
     private ClientUI clientUI;
@@ -21,8 +25,10 @@ public class Client{
     private DataOutputStream outputstream;
     
 
-    public Client(Socket socket, String folder) throws IOException{
+    public Client(Socket socket, String folder, String dnsAddress, int dnsPort) throws IOException{
         Client.FOLDER = folder;
+        Client.DNSAddress = dnsAddress;
+        Client.DNSPort = dnsPort;
         this.socket = socket;
         this.clientUI = new ClientUI();
         this.clienteController = new ClienteController();
@@ -34,13 +40,18 @@ public class Client{
     public void run() throws IOException{
 
         TCPCarrier carrier = TCPCarrier.getInstance();
+        Resolver resolver = Resolver.getInstance();
+
         InetSocketAddress source = (InetSocketAddress) socket.getLocalSocketAddress();
         InetSocketAddress dest = (InetSocketAddress) socket.getRemoteSocketAddress();
+        
+        DNSPacket dnsPacket = this.clientUI.getHELLODNSPacket(source);
         TCPPacket tcpPacket = this.clientUI.getHELLOTCPPacket(source,dest);
 
         System.out.println(tcpPacket.toString());
 
         carrier.sendTCPPacket(outputstream,tcpPacket);
+        resolver.send(dnsPacket,Client.DNSAddress,Client.DNSPort);
 
         try{
 
@@ -65,10 +76,11 @@ public class Client{
             this.inputstream.close();
             this.outputstream.close();
             this.socket.close();
+            resolver.send(this.clientUI.getEXIDNSPacket(),DNSAddress,DNSPort);
         }
 
         catch (Exception e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

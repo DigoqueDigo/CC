@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import carrier.Reader;
+import dns.DNSUtils;
 import packets.TCPPacket;
 import packets.TCPPacket.TCPProtocol;
 import packets.info.FileInfo;
@@ -86,6 +87,7 @@ public class ClientUtils{
 
         tcpPacket = new TCPPacket(
             TCPProtocol.HELLO,
+            DNSUtils.getInstance().getHostName(),
             source.getAddress().getHostAddress(),
             dest.getAddress().getHostAddress(),
             source.getPort(),
@@ -129,6 +131,7 @@ public class ClientUtils{
 
         tcpPacket = new TCPPacket(
             TCPProtocol.valueOf(tokens[0]),
+            DNSUtils.getInstance().getHostName(),
             source.getAddress().getHostAddress(),
             dest.getAddress().getHostAddress(),
             source.getPort(),

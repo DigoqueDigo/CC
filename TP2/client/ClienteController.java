@@ -32,7 +32,7 @@ public class ClienteController{
                             filename,
                             this.schedule.getValue(filename))
                     ));
-                    
+
                     threads.get(threads.size()-1).start();
                 }
 

@@ -3,7 +3,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.nio.file.FileAlreadyExistsException;
+import dns.DNSUtils;
+import packets.DNSPacket;
 import packets.TCPPacket;
+import packets.DNSPacket.DNSProtocol;
 
 
 public class ClientUI{
@@ -24,6 +27,16 @@ public class ClientUI{
 
     public TCPPacket getHELLOTCPPacket(InetSocketAddress source, InetSocketAddress dest){
         return this.clientUtils.getHELLOTCPPacket(source,dest);
+    }
+
+
+    public DNSPacket getHELLODNSPacket(InetSocketAddress source){
+        return new DNSPacket(DNSProtocol.HELLO,DNSUtils.getInstance().getHostName(),source.getAddress().getHostAddress());
+    }
+
+
+    public DNSPacket getEXIDNSPacket(){
+        return new DNSPacket(DNSProtocol.EXIT,DNSUtils.getInstance().getHostName());
     }
 
 

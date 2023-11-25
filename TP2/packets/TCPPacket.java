@@ -18,6 +18,7 @@ public class TCPPacket implements Binary{
     public enum TCPProtocol {HELLO, GET, EXIT, HELLOACK, GETAK, EXITACK, ACK};
 
     private TCPProtocol protocol;
+    private String HostName;
     private String IPsource;
     private String IPdest;
     private int Portsource;
@@ -26,8 +27,9 @@ public class TCPPacket implements Binary{
     private Message<PieceInfo,String> Toclient;
 
 
-    public TCPPacket(TCPProtocol protocol, String IPsource, String IPdest, int Portsource, int Portdest, TYPE type){
+    public TCPPacket(TCPProtocol protocol, String Hostname, String IPsource, String IPdest, int Portsource, int Portdest, TYPE type){
         this.protocol = protocol;
+        this.HostName = Hostname;
         this.IPsource = IPsource;
         this.IPdest = IPdest;
         this.Portsource = Portsource;
@@ -65,6 +67,11 @@ public class TCPPacket implements Binary{
     }
 
 
+    public String getHostName(){
+        return this.HostName;
+    }
+
+
     public TYPE getType(){
         if (this.Toclient != null) return this.Toclient.getType();
         return this.Totracker.getType();
@@ -98,6 +105,7 @@ public class TCPPacket implements Binary{
         DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
 
         dataOutputStream.writeUTF(this.protocol.name());
+        dataOutputStream.writeUTF(this.HostName);
         dataOutputStream.writeUTF(this.IPsource);
         dataOutputStream.writeUTF(this.IPdest);
         dataOutputStream.writeInt(this.Portsource);
@@ -123,6 +131,7 @@ public class TCPPacket implements Binary{
         DataInputStream dataInputStream = new DataInputStream(byteArrayInputStream);
 
         TCPProtocol protocol = TCPProtocol.valueOf(dataInputStream.readUTF());
+        String HostName = dataInputStream.readUTF();
         String IPsource = dataInputStream.readUTF();
         String IPdest = dataInputStream.readUTF();
         int Portsource = dataInputStream.readInt();
@@ -132,7 +141,7 @@ public class TCPPacket implements Binary{
         data_message = new byte[dataInputStream.readInt()];
         Reader.read(dataInputStream,data_message,data_message.length);
 
-        result = new TCPPacket(protocol,IPsource,IPdest,Portsource,Portdest,type);
+        result = new TCPPacket(protocol,HostName,IPsource,IPdest,Portsource,Portdest,type);
 
         if (type == TYPE.TOCLIENT) result.setToClient(ToClient.deserialize(data_message));
         else result.setToTracker(ToTracker.deserialize(data_message));
@@ -146,6 +155,7 @@ public class TCPPacket implements Binary{
         StringBuilder buffer = new StringBuilder();
 
         buffer.append("Protocolo: ").append(this.protocol.toString());
+        buffer.append("\nHostname: ").append(this.HostName);
         buffer.append("\nIP source: ").append(this.IPsource);
         buffer.append("\nIP dest: ").append(this.IPdest);
         buffer.append("\nPort source: ").append(this.Portsource);
