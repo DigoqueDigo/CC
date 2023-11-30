@@ -13,6 +13,7 @@ import client.resolver.Resolver;
 import client.schedule.DownloadSchedule;
 import packets.DNSPacket;
 import packets.DNSPacket.DNSProtocol;
+import packets.UDPPacket.UDPProtocol;
 import packets.info.PieceInfo;
 
 
@@ -58,12 +59,14 @@ public class Downloader implements Runnable{
                 DNSPacket dnsRequest = new DNSPacket(DNSProtocol.REQUEST,element.getKey());
                 DNSPacket dnsResponse = Resolver.getInstance().resolve(dnsRequest,Client.DNSAddress,Client.DNSPort);
 
-                threads.add(new Thread(
-                    new DownloaderWorker(
-                        dnsResponse.getAddress(),
-                        element.getValue(),
-                        buffer)
-                ));
+                if(dnsResponse.getProtocol()==DNSProtocol.RESPONSE) {
+                    threads.add(new Thread(
+                        new DownloaderWorker(
+                            dnsResponse.getAddress(),
+                            element.getValue(),
+                            buffer)
+                    ));
+                }
 
                 threads.get(threads.size()-1).start();
             }
