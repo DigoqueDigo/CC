@@ -59,7 +59,7 @@ public class Downloader implements Runnable{
                 DNSPacket dnsRequest = new DNSPacket(DNSProtocol.REQUEST,element.getKey());
                 DNSPacket dnsResponse = Resolver.getInstance().resolve(dnsRequest,Client.DNSAddress,Client.DNSPort);
 
-                if(dnsResponse.getProtocol()==DNSProtocol.RESPONSE) {
+                if (dnsResponse.getProtocol() == DNSProtocol.RESPONSE){
                     threads.add(new Thread(
                         new DownloaderWorker(
                             dnsResponse.getAddress(),
